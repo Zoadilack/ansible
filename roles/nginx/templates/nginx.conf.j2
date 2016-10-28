@@ -5,6 +5,10 @@ worker_processes  1;
 error_log  /var/log/nginx/error.log warn;
 pid        /var/run/nginx.pid;
 
+upstream phpfcgi {
+    server 127.0.0.1:9000;
+    # server unix:/var/run/php7.0-fpm.sock; #for PHP-FPM running on UNIX socket
+}
 
 events {
     worker_connections  1024;
