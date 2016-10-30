@@ -1,0 +1,14 @@
+---
+- name: remove docs build
+  file: dest=/var/www/tavro/docs/build state=absent
+
+- name: remove docs cache
+  file: dest=/var/www/tavro/docs/build state=absent
+
+- name: regenerate docs
+  command: php sami update config.php
+  args:
+    chdir: /var/www/tavro/docs
+
+- name: restart nginx
+  command: service nginx restart && service php7.0-fpm restart
