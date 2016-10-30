@@ -1,7 +1,6 @@
 ---
-- name: set webroot
-  set_fact:
-    web_root: "/var/www/{{appname}}/admin"
+- name: setup symfony binary alias
+  file: src=/var/www/tavro/api/bin/console dest=/var/www/tavro/api/symfony state=link
 
 - name: restart nginx
   service: name=nginx state=restarted

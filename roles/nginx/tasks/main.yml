@@ -30,14 +30,14 @@
 
 - name: copy configs
   template: src={{item}}.conf.j2 dest=/etc/nginx/sites-available/{{item}}.conf owner=www-data group=www-data mode=0644
-  with_items: {{ hosts }}
+  with_items: "{{hosts}}"
 
 - name: enable vhosts
   file:
     src: /etc/nginx/sites-available/{{item}}.conf
     dest: /etc/nginx/sites-enabled/{{item}}.conf
     state: link
-  with_items: {{ hosts }}
+  with_items: "{{hosts}}"
 
 
 - name: NGINX | Starting NGINX

@@ -1,4 +1,5 @@
 ---
+hosts: [admin,api,docs,phpunit,app]
 server:
     install: '1'
     packages: [curl,unzip,wget,snmp,build-essential,python-software-properties,python-pip,python2.7,libssl-dev,libcurl4-openssl-dev,pkg-config,openssl,vim,git,nodejs,npm,mysql-server,mysql-client,python-mysqldb]
