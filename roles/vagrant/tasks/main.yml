@@ -15,3 +15,6 @@
 
 - name: create self-signed SSL cert
   command: openssl req -new -nodes -x509 -subj "/C=US/ST=Washington/L=Seattle/O=IT/CN=${ansible_fqdn}" -days 3650 -keyout /etc/nginx/ssl/{{appname}}.key -out /etc/nginx/ssl/{{appname}}.crt -extensions v3_ca creates=/etc/nginx/ssl/{{appname}}.crt
+
+- name: create swapfile
+  shell: dd if=/dev/zero of=/swapfile bs=1G count=2
