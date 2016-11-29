@@ -83,6 +83,6 @@ server {
 
 server {
     listen 80;
-    server_name api.{{ appname }}.dev;
+    server_name {{ appname }}.dev;
     return 301 https://$server_name$request_uri;
 }
