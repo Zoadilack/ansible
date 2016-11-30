@@ -2,6 +2,8 @@
 - hosts: all
   become: true
   become_user: root
+  vars:
+    app_env: "dev"
   vars_files:
     - vars/all.yml
   roles:
