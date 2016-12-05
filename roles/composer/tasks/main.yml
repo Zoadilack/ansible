@@ -51,3 +51,6 @@
 
 - include: global-require.yml
   when: composer_global_packages|length > 0
+
+- name: set global timeout
+  command: composer --global config process-timeout 3000
