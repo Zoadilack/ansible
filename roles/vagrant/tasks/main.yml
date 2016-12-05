@@ -30,9 +30,5 @@
   args:
     chdir: /var/www/{{appname}}/api
 
-- name: install the admin app
-  command: composer install --prefer-dist
-  become: false
-  args:
-    chdir: /var/www/{{appname}}/admin
+- include: playbooks/install-with-demo.yml
 
