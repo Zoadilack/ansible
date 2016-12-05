@@ -28,7 +28,6 @@
   command: composer install --prefer-dist
   become: false
   args:
-    chdir: /var/www/{{appname}}/api
+    chdir: "/var/www/{{appname}}/api"
 
-- include: playbooks/install-with-demo.yml
 

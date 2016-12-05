@@ -8,9 +8,11 @@
     - vars/all.yml
   roles:
     - role: server
-    - role: vagrant
     - role: composer
+    - role: vagrant
     - role: nginx
     - role: mysql
     - role: phpunit
     - role: tavro
+
+- include: playbooks/install-with-demo.yml
