@@ -16,5 +16,18 @@
 - name: create self-signed SSL cert
   command: openssl req -new -nodes -x509 -subj "/C=US/ST=Washington/L=Seattle/O=IT/CN=${ansible_fqdn}" -days 3650 -keyout /etc/nginx/ssl/{{appname}}.key -out /etc/nginx/ssl/{{appname}}.crt -extensions v3_ca creates=/etc/nginx/ssl/{{appname}}.crt
 
+- stat: path=/var/swapfile
+  register: swapfile
+
+# @TODO: automate this with Ansible instead of a shell script
 - name: create swapfile
-  shell: dd if=/dev/zero of=/swapfile bs=1G count=2
+  shell: bash /var/www/{{appname}}/provisioning/misc/scripts/swapfile.sh
+  when: swapfile.stat.exists == False
+
+- name: install the api
+  command: composer install --prefer-dist
+  become: false
+  args:
+    chdir: "/var/www/{{appname}}/api"
+
+
