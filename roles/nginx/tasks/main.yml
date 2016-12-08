@@ -9,15 +9,12 @@
   lineinfile: dest=/etc/apt/sources.list line="deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx"
 
 - name: Update apt
-  apt: update_cache=yes
+  apt: update_cache=yes cache_valid_time=36000
 
 - name: install nginx + packages
   apt: pkg={{ item }} state=latest
   with_items:
     - nginx
-
-- name: create sites-available
-  file: path=/etc/nginx/sites-available state=directory
 
 - name: create sites-enabled
   file: path=/etc/nginx/sites-enabled state=directory
@@ -38,7 +35,6 @@
     dest: /etc/nginx/sites-enabled/{{item}}.conf
     state: link
   with_items: "{{hosts}}"
-
 
 - name: NGINX | Starting NGINX
   service:
