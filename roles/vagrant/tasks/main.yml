@@ -10,6 +10,14 @@
 - name: Update /etc/hosts
   lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1' line='127.0.0.1 localhost {{ hostname }}' owner=root group=root mode=0644
 
+- name: add bitbucket to known_hosts
+  command: ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts
+  command: ssh -T git@bitbucket.org
+
+- name: add github to known_hosts
+  command: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+  command: ssh -T git@github.com
+
 - name: make ssl dir
   file: dest=/etc/nginx/ssl state=directory mode=0755 owner=www-data group=www-data
 

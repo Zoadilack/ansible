@@ -1,0 +1,24 @@
+---
+- name: install php7-oauth dependencies
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - gcc
+    - make
+    - autoconf
+    - libc-dev
+    - pkg-config
+
+- name: install oauth with pecl7.0-sp
+  command: pecl7.0-sp install oauth
+
+- name: register oauth config file "stat"
+  stat: path=/etc/php/7.0/fpm/conf.d/oauth.ini
+  register: oauth_config
+
+- name: create a configuration file for the extension
+  command: bash -c "echo extension=oauth.so > /etc/php/7.0/fpm/conf.d/oauth.ini"
+  when: oauth_config.stat.exists == False
+
+- service:
+    name: php7.0-fpm-sp
+    state: restarted
