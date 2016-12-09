@@ -26,6 +26,8 @@
     mv /tmp/composer.phar {{ composer_path }}
     creates={{ composer_path }}
   when: not composer_bin.stat.exists
+  become: true
+  become_user: root
 
 - name: Update Composer to latest version (if configured).
   shell: >
@@ -40,6 +42,7 @@
     owner: "{{ composer_home_owner }}"
     group: "{{ composer_home_group }}"
     state: directory
+  become: true
 
 - name: Add GitHub OAuth token for Composer (if configured).
   template:

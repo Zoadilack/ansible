@@ -12,16 +12,26 @@
 - name: Install System Packages
   apt: pkg={{ item }} state=latest
   with_items: "{{ server.packages }}"
+  become: true
+  become_user: root
 
 - name: Install php7 Packages
   apt: pkg={{ item }} state=latest
   with_items: "{{ server.php7_packages }}"
+  become: true
+  become_user: root
 
 - name: Configure the timezone
   template: src=timezone.tpl dest=/etc/timezone
+  become: true
+  become_user: root
 
 - name: More Configure the timezone
   file: src=/usr/share/zoneinfo/{{server.timezone}} dest=/etc/localtime state=link force=yes backup=yes
+  become: true
+  become_user: root
 
 - name: Set default system language pack
   shell: locale-gen {{server.locale}}
+  become: true
+  become_user: root

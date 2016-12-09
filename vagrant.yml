@@ -9,10 +9,10 @@
   roles:
     - role: server
     - role: composer
-    - role: vagrant
     - role: nginx
     - role: mysql
     - role: phpunit
+    - role: vagrant
     - role: tavro
 
 - include: playbooks/install-with-demo.yml
