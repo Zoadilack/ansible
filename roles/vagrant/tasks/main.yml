@@ -10,6 +10,9 @@
 - name: Update /etc/hosts
   lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1' line='127.0.0.1 localhost {{ hostname }}' owner=root group=root mode=0644
 
+- name: make sure ssh config exists
+  file: dest=~/.ssh/config state=touch mode=0644
+
 - name: ensure github.com is a known host
   lineinfile:
     dest: /root/.ssh/known_hosts
@@ -26,6 +29,12 @@
     line: "{{ lookup('pipe', 'ssh-keyscan -t rsa bitbucket.org') }}"
     regexp: "^bitbucket\\.org"
 
+- name: for vagrant, do not strict host bitbucket
+  command: echo -e "Host bitbucket.org\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
+- name: for vagrant, do not strict host github
+  command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
 - name: make ssl dir
   file: dest=/etc/nginx/ssl state=directory mode=0755 owner=www-data group=www-data
 
@@ -41,7 +50,7 @@
   when: swapfile.stat.exists == False
 
 - name: install the api
-  command: composer install --prefer-dist
+  command: composer install --prefer-dist -o -vvv
   become: false
   args:
     chdir: "/var/www/{{appname}}/api"

@@ -7,3 +7,16 @@
 
 - name: restart php7.0-fpm
   service: name=php7.0-fpm state=restarted
+
+- name: make sure the keys dir exists
+  file: path=/var/www/tavro/api/app/keys state=directory owner=www-data group=www-data mode=0755 force=yes
+
+- name: generate private key
+  command: openssl genrsa -out keys/private.pem -aes256 -passout pass:tavro 4096
+  args:
+    chdir: /var/www/tavro/api
+
+- name: generate public key
+  command: openssl rsa -passin pass:tavro -pubout -in keys/private.pem -out app/keys/public.pem
+  args:
+    chdir: /var/www/tavro/api
