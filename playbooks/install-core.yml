@@ -1,0 +1,19 @@
+---
+- hosts: all
+
+  become: true
+  become_user: root
+
+  vars:
+    api_root: "/var/www/tavro/api/"
+    fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures/"
+    core_fixture_name: "Core"
+
+- include: reset-db.yml
+
+  tasks:
+
+    - name: install core data
+      shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures="{{api_root}}{{fixture_path}}{{core_fixture_name}}" --append
+
+    - debug: msg="Tavro Core Installation Complete on {{ inventory_hostname }}"

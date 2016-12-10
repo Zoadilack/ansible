@@ -1,0 +1,15 @@
+---
+- hosts: all
+
+- tasks:
+
+  # Sending an e-mail using Gmail SMTP servers
+  - local_action: mail
+                  host=smtp.mailgun.org
+                  port=587
+                  username=postmaster@zoadilack.com
+                  password={{ mail_password }}
+                  to="Developers <dev@zoadilack.com>"
+                  from="Tavro Bot"
+                  subject="Tavro {{app_env}} Server Provisioned"
+                  body='Tavro {{app_env}} provisioned at {{ inventory_hostname }}.'

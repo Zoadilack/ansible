@@ -1,4 +1,10 @@
 ---
+# Do not let this run on any environment except development!
+- hosts: vagrant
+
+  become: true
+  become_user: root
+
 - name: remove docs build
   file: dest=/var/www/tavro/docs/build state=absent
 

@@ -1,22 +1,4 @@
 ---
-- stat:
-    path: "/var/www/tavro/api/vendor/autoload.php"
-  register: autoload
-
-- name: install the api
-  command: composer install --prefer-dist -o -vvv
-  become: false
-  args:
-    chdir: "/var/www/{{appname}}/api"
-  when: autoload.stat.exists == False
-
-- name: update the api
-  command: composer update --prefer-dist -o -vvv
-  become: false
-  args:
-    chdir: "/var/www/{{appname}}/api"
-  when: autoload.stat.exists == True
-
 - name: setup symfony binary alias
   file: src=/var/www/tavro/api/bin/console dest=/var/www/tavro/api/symfony state=link
 

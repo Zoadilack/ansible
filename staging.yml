@@ -3,7 +3,7 @@
   become: true
   become_user: root
   vars:
-    app_env: "dev"
+    app_env: "staging"
   vars_files:
     - vars/all.yml
   roles:
@@ -12,7 +12,7 @@
     - role: nginx
     - role: mysql
     - role: phpunit
-    - role: vagrant
+    - role: staging
     - role: tavro
 
-- include: playbooks/install-dev.yml
+- include: playbooks/install-staging.yml

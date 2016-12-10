@@ -6,10 +6,9 @@
 
   vars:
     api_root: "/var/www/tavro/api/"
-    fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures/"
-    fixture_name: "Core"
 
   tasks:
+
     - name: drop database
       shell: php {{api_root}}bin/console doctrine:database:drop --if-exists --force
 
@@ -19,7 +18,4 @@
     - name: execute migrations
       shell: php {{api_root}}bin/console doctrine:migrations:migrate --no-interaction
 
-    - name: install core data
-      shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}{{fixture_name}} --append
-
-    - debug: msg="Tavro Core Installation Complete on {{ inventory_hostname }}"
+    - debug: msg="Tavro database reset on {{ inventory_hostname }}"

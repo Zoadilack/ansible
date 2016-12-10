@@ -1,0 +1,30 @@
+---
+- hosts: all
+
+  become: true
+  become_user: root
+
+  vars:
+    api_root: "/var/www/tavro/api/"
+    fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures/"
+    fixture_name: "Core"
+
+  tasks:
+
+    - stat:
+        path: "/var/www/tavro/admin/vendor/autoload.php"
+      register: autoload
+
+    - name: install the admin dependencies
+      command: composer install --prefer-dist -o -vvv
+      become: false
+      args:
+        chdir: "/var/www/{{appname}}/admin"
+      when: autoload.stat.exists == False
+
+    - name: update the admin dependencies
+      command: composer update --prefer-dist -o -vvv
+      become: false
+      args:
+        chdir: "/var/www/{{appname}}/admin"
+      when: autoload.stat.exists == True

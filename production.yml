@@ -1,9 +1,9 @@
 ---
-- hosts: all
+- hosts: prod
   become: true
   become_user: root
   vars:
-    app_env: "dev"
+    app_env: "production"
   vars_files:
     - vars/all.yml
   roles:
@@ -11,8 +11,7 @@
     - role: composer
     - role: nginx
     - role: mysql
-    - role: phpunit
-    - role: vagrant
+    - role: production
     - role: tavro
 
-- include: playbooks/install-dev.yml
+- include: playbooks/install-prod.yml
