@@ -1,0 +1,23 @@
+---
+- hosts: all
+
+  become: true
+  become_user: root
+
+  vars:
+    api_root: "/var/www/tavro/api/"
+    admin_root: "/var/www/tavro/api/"
+
+  tasks:
+
+    - name: update admin/tavro-core
+      command: composer update zoadilack/tavro-core --prefer-dist -o -vvv
+      become: false
+      args:
+        chdir: "{{admin_root}}"
+
+    - name: update api/tavro-core
+      command: composer update zoadilack/tavro-core --prefer-dist -o -vvv
+      become: false
+      args:
+        chdir: "{{api_root}}"

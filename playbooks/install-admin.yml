@@ -10,19 +10,19 @@
   tasks:
     
     - stat:
-        path: "/var/www/tavro/admin/vendor/autoload.php"
+        path: "{{admin_root}}vendor"
       register: autoload
     
     - name: install the admin dependencies
       command: composer install --prefer-dist -o -vvv
       become: false
       args:
-        chdir: "/var/www/{{appname}}/admin"
-      when: autoload.stat.exists == False
+        chdir: "{{admin_root}}"
+      when: autoload.stat.isdir == False
     
     - name: update the admin dependencies
       command: composer update --prefer-dist -o -vvv
       become: false
       args:
-        chdir: "/var/www/{{appname}}/admin"
-      when: autoload.stat.exists == True
+        chdir: "{{admin_root}}"
+      when: autoload.stat.isdir is defined and autoload.stat.isdir
