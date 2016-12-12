@@ -1,14 +1,14 @@
 ---
-- hosts: all
-
-- vars:
-    api_root: "/var/www/tavro/api/"
-
 - include: install-core.yml
 - include: install-api.yml
 - include: install-admin.yml
 
-- tasks:
+- hosts: all
+
+  vars:
+    api_root: "/var/www/tavro/api/"
+
+  tasks:
 
   - debug: msg="Tavro Staging Installation Complete on {{ inventory_hostname }}"
 

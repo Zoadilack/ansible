@@ -1,18 +1,18 @@
 ---
-- hosts: all
-
-- vars:
-    api_root: "/var/www/tavro/api/"
-    fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures/"
-    fixture_name: "Dev"
-
 - include: install-core.yml
 - include: install-api.yml
 - include: install-admin.yml
 
-- tasks:
+- hosts: all
 
-  - name: install development fixtures
-    shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}{{fixture_name}} --append
+  vars:
+    api_root: "/var/www/tavro/api/"
+    fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures/"
+    fixture_name: "Dev"
 
-  - debug: msg="Tavro Development Installation Complete on {{ inventory_hostname }}"
+  tasks:
+
+    - name: install development fixtures
+      shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}{{fixture_name}} --append
+
+    - debug: msg="Tavro Development Installation Complete on {{ inventory_hostname }}"

@@ -1,5 +1,5 @@
 ---
-- hosts: inventories/vagrant
+- hosts: all
   become: true
   become_user: root
   vars:

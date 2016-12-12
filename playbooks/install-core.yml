@@ -1,4 +1,6 @@
 ---
+- include: reset-db.yml
+
 - hosts: all
 
   become: true
@@ -8,8 +10,6 @@
     api_root: "/var/www/tavro/api/"
     fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures/"
     core_fixture_name: "Core"
-
-- include: reset-db.yml
 
   tasks:
 
