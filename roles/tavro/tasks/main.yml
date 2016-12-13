@@ -2,14 +2,6 @@
 - name: setup symfony binary alias
   file: src=/var/www/tavro/api/bin/console dest=/var/www/tavro/api/symfony state=link
 
-- name: restart nginx
-  service: name=nginx state=restarted
-  become: true
-
-- name: restart php7.0-fpm
-  service: name=php7.0-fpm state=restarted
-  become: true
-
 - name: make sure the keys dir exists
   file: path=/var/www/tavro/api/app/keys state=directory mode=0777 force=yes
   become: true
@@ -24,3 +16,21 @@
   command: openssl rsa -passin pass:tavro -pubout -in private.pem -out public.pem
   args:
     chdir: /var/www/tavro/api/app/keys
+
+- name: restart nginx
+  service: name=nginx state=restarted
+  become: true
+
+- name: restart php7.0-fpm
+  service: name=php7.0-fpm state=restarted
+  become: true
+
+- name: clear all api caches
+  command: php bin/console cache:clear
+  args:
+    chdir: /var/www/tavro/api
+
+- name: clear all admin caches
+  command: php bin/console cache:clear
+  args:
+    chdir: /var/www/tavro/admin

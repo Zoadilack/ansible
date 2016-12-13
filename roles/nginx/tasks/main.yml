@@ -9,12 +9,10 @@
   lineinfile: dest=/etc/apt/sources.list line="deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx"
 
 - name: Update apt
-  apt: update_cache=yes cache_valid_time=36000
+  apt: update_cache=yes
 
 - name: install nginx + packages
-  apt: pkg={{ item }} state=latest
-  with_items:
-    - nginx
+  apt: pkg=nginx state=present
 
 - name: create sites-enabled
   file: path=/etc/nginx/sites-enabled state=directory

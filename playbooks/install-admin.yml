@@ -6,23 +6,25 @@
 
   vars:
     admin_root: "/var/www/tavro/admin/"
+    fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures/"
+    fixture_name: "Core"
 
   tasks:
-    
+
     - stat:
         path: "{{admin_root}}vendor"
       register: autoload
-    
+
     - name: install the admin dependencies
       command: composer install --prefer-dist -o -vvv
       become: false
       args:
         chdir: "{{admin_root}}"
-      when: autoload.stat.isdir == False
-    
+      when: autoload.stat.exists == False
+
     - name: update the admin dependencies
       command: composer update --prefer-dist -o -vvv
       become: false
       args:
         chdir: "{{admin_root}}"
-      when: autoload.stat.isdir is defined and autoload.stat.isdir
+      when: autoload.stat.exists

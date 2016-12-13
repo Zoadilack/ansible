@@ -68,4 +68,3 @@
   shell: bash /var/www/{{appname}}/provisioning/misc/scripts/swapfile.sh
   when: swapfile.stat.exists == False
   become: true
-

@@ -12,19 +12,19 @@
   tasks:
 
     - stat:
-        path: "{{api_root}}vendor/autoload.php"
+        path: "{{api_root}}vendor"
       register: autoload
 
-    - name: install the admin dependencies
+    - name: install the api dependencies
       command: composer install --prefer-dist -o -vvv
       become: false
       args:
         chdir: "{{api_root}}"
-      when: autoload.stat.isdir == False
+      when: autoload.stat.exists == False
 
-    - name: update the admin dependencies
+    - name: update the api dependencies
       command: composer update --prefer-dist -o -vvv
       become: false
       args:
         chdir: "{{api_root}}"
-      when: autoload.stat.isdir is defined and autoload.stat.isdir
+      when: autoload.stat.exists
