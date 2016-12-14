@@ -14,6 +14,12 @@
 - name: install nginx + packages
   apt: pkg=nginx state=present
 
+- name: set permissions on nginx logs dir
+  file: path=/var/log/nginx mode=0777 owner=www-data group=www-data state=directory
+
+- name: create sites-available
+  file: path=/etc/nginx/sites-available state=directory
+
 - name: create sites-enabled
   file: path=/etc/nginx/sites-enabled state=directory
 
@@ -33,8 +39,3 @@
     dest: /etc/nginx/sites-enabled/{{item}}.conf
     state: link
   with_items: "{{hosts}}"
-
-- name: NGINX | Starting NGINX
-  service:
-    name: nginx
-    state: started
