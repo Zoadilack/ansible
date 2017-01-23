@@ -15,6 +15,11 @@
         path: "{{admin_root}}vendor"
       register: autoload
 
+    - name: Clear composer cache
+      shell: composer clear-cache
+      args:
+        chdir: "{{admin_root}}"
+
     - name: install the admin dependencies
       command: composer install --prefer-dist -o -vvv
       become: false

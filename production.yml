@@ -10,7 +10,6 @@
     - role: server
     - role: composer
     - role: nginx
-    - role: mysql
     - role: production
     - role: tavro
 
