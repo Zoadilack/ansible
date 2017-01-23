@@ -4,17 +4,22 @@
 
   become: true
   become_user: root
+  any_errors_fatal: true
 
 - name: remove docs build
   file: dest=/var/www/tavro/docs/build state=absent
+  failed_when: inventory_hostname != "vagrant"
 
 - name: remove docs cache
   file: dest=/var/www/tavro/docs/build state=absent
+  failed_when: inventory_hostname != "vagrant"
 
 - name: regenerate docs
   command: php sami update config.php
   args:
     chdir: /var/www/tavro/docs
+  failed_when: inventory_hostname != "vagrant"
 
 - name: restart nginx
   command: service nginx restart && service php7.0-fpm restart
+  failed_when: inventory_hostname != "vagrant"
