@@ -16,6 +16,5 @@
     # php symfony doctrine:fixtures:load --fixtures=/var/www/tavro/api/vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures/Dev --append
     - name: install development fixtures
       shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}{{fixture_name}} --append
-      failed_when: inventory_hostname != "vagrant"
 
     - debug: msg="Tavro Development Installation Complete on {{ inventory_hostname }}"
