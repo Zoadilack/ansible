@@ -16,37 +16,37 @@
 
     - name: drop database
       shell: php {{api_root}}bin/console doctrine:database:drop --force
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"
 
     - name: recreate database
       shell: php {{api_root}}bin/console doctrine:database:create
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"
 
     - name: remove old migrations file
       shell: find . -type f -not -name "Version1.php" -exec rm -rf {} \;
       args:
           chdir: "{{ migrations_dir }}"
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"
 
     - name: regenerate entities
       shell: php {{api_root}}bin/console doctrine:generate:entities TavroCoreBundle
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"
 
     - name: rebuild migrations
       shell: php {{api_root}}bin/console doctrine:migrations:diff
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"
 
     - name: run migrations
       shell: php {{api_root}}bin/console doctrine:migrations:migrate --no-interaction
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"
 
     - name: install core data
       shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}{{fixture_name}} --append
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"
 
     - name: clear caches
       shell: php {{api_root}}bin/console cache:clear --env=dev
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"
 
     - debug: msg="Tavro Application Database Rebase Complete on {{ inventory_hostname }}"
-      failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "vagrant"

@@ -1,6 +1,6 @@
 ---
 - include: install-api.yml
-#- include: install-admin.yml
+- include: install-admin.yml
 - include: install-core-db.yml
 
 - hosts: all
