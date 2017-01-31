@@ -1,12 +1,4 @@
 ---
-- name: Create paramters file
-  template:
-    dest: /var/www/tavro/api/app/config/parameters.yml
-    src: templates/parameters.yml.j2
-    owner: www-data
-    group: www-data
-    mode: 0644
-
 - name: setup symfony binary alias
   file: src=/var/www/tavro/api/bin/console dest=/var/www/tavro/api/symfony state=link
 

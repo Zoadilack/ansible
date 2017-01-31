@@ -1,4 +1,12 @@
 ---
+- name: Create paramters file
+  template:
+    dest: /var/www/tavro/api/app/config/parameters.yml
+    src: templates/parameters.yml.j2
+    owner: www-data
+    group: www-data
+    mode: 0644
+
 - name: clone api
   git:
     repo: git@bitbucket.org:zoadilack/tavro-api.git
