@@ -1,3 +1,3 @@
-# Tavro Provisioning & DevOps
+# Tavro Provisioning
 
-Full documentation here: [https://sites.google.com/a/zoadilack.com/tavro/](https://sites.google.com/a/zoadilack.com/tavro/)
+Full documentation available on Confluence:

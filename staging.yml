@@ -10,9 +10,7 @@
     - role: server
     - role: composer
     - role: nginx
-    - role: mysql
     - role: phpunit
-    - role: staging
     - role: tavro
 
 - include: playbooks/install-staging.yml

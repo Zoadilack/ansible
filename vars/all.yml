@@ -1,4 +1,5 @@
 ---
+appname: "tavro"
 hosts: [admin,api,docs,phpunit,app]
 server:
     install: '1'

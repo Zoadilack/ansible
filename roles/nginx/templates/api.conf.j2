@@ -11,14 +11,14 @@ server {
     ssl_ciphers                 EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
     ssl_prefer_server_ciphers   on;
 
-    server_name api.{{ appname }}.dev;
+    server_name api.{{ hostname }};
 
-    add_header Access-Control-Allow-Origin api.{{ appname }}.dev;
-    add_header Access-Control-Allow-Origin app.{{ appname }}.dev;
-    add_header Access-Control-Allow-Origin admin.{{ appname }}.dev;
+    add_header Access-Control-Allow-Origin api.{{ hostname }};
+    add_header Access-Control-Allow-Origin app.{{ hostname }};
+    add_header Access-Control-Allow-Origin admin.{{ hostname }};
 
-    error_log /var/log/nginx/{{ appname }}.error.log;
-    access_log /var/log/nginx/{{ appname }}.access.log;
+    error_log /var/log/nginx/tavro.error.log;
+    access_log /var/log/nginx/tavro.access.log;
 
     #don't send the nginx version number in error pages and Server header
     server_tokens off;
@@ -55,7 +55,7 @@ server {
     # strip app.php/ prefix if it is present
     rewrite ^/app_dev\.php/?(.*)$ /$1 permanent;
 
-    root /var/www/{{ appname }}/api/web;
+    root /var/www/tavro/api/web;
 
     location / {
 
@@ -95,6 +95,6 @@ server {
 
 server {
     listen 80;
-    server_name api.{{ appname }}.dev;
+    server_name api.{{ hostname }};
     return 301 https://$server_name$request_uri;
 }

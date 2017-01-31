@@ -1,5 +1,5 @@
 ---
-- hosts: prod
+- hosts: all
   become: true
   become_user: root
   vars:
@@ -10,7 +10,8 @@
     - role: server
     - role: composer
     - role: nginx
-    - role: production
+    - role: phpunit
     - role: tavro
+    - role: tavro-production
 
-- include: playbooks/install-prod.yml
+- include: playbooks/install-production.yml
