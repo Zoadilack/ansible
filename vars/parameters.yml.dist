@@ -1,4 +1,7 @@
 ---
+GIT_PRIVATE_KEY: ~/.ssh/id_rsa
+BECOME_USER: vagrant
+HOME_DIR: /home/vagrant
 DATABASE_DRIVER: pdo_mysql
 DATABASE_HOST: 127.0.0.1
 DATABASE_PORT: 3306

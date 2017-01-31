@@ -35,3 +35,57 @@
   shell: locale-gen {{server.locale}}
   become: true
   become_user: root
+
+- name: Set the hostname in /etc/hostname
+  shell: echo {{ hostname }} > /etc/hostname
+  when: hostname is defined
+  become: true
+
+- name: Set the hostname
+  shell: hostname {{ hostname }}
+  when: hostname is defined
+  become: true
+
+- name: Update /etc/hosts
+  lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1' line='127.0.0.1 localhost {{ hostname }}' owner=root group=root mode=0644
+  become: true
+
+- name: make sure ssh config exists
+  file: dest="{{ HOME_DIR }}/.ssh/config" state=touch mode=0600
+  become_user: "{{ BECOME_USER }}"
+
+- name: ensure github.com is a known host
+  lineinfile:
+    dest: "{{ HOME_DIR }}/.ssh/known_hosts"
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+    regexp: "^github\\.com"
+  become_user: "{{ BECOME_USER }}"
+
+- name: ensure bitbucket.org is a known host
+  lineinfile:
+    dest: "{{ HOME_DIR }}/.ssh/known_hosts"
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa bitbucket.org') }}"
+    regexp: "^bitbucket\\.org"
+  become_user: "{{ BECOME_USER }}"
+
+- name: ensure bitbucket.org is added to ssh config
+  lineinfile:
+    dest: "{{ HOME_DIR }}/.ssh/config"
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'echo \"Host bitbucket.org\n\tStrictHostKeyChecking no\n\"') }}"
+    regexp: "^bitbucket\\.org"
+  become_user: "{{ BECOME_USER }}"
+
+- name: ensure github.com is added to ssh config
+  lineinfile:
+    dest: "{{ HOME_DIR }}/.ssh/config"
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'echo \"Host github.com\n\tStrictHostKeyChecking no\n\"') }}"
+    regexp: "^github\\.com"
+  become_user: "{{ BECOME_USER }}"

@@ -2,7 +2,7 @@
 - name: Create paramters file
   template:
     dest: /var/www/tavro/api/app/config/parameters.yml
-    src: parameters.yml.j2
+    src: templates/parameters.yml.j2
     owner: www-data
     group: www-data
     mode: 0644

@@ -1,0 +1,16 @@
+---
+- name: clone api
+  git:
+    repo: git@bitbucket.org:zoadilack/tavro-api.git
+    dest: /var/www/tavro/api
+    version: "{{ app_env }}"
+    key_file: "{{ GIT_PRIVATE_KEY }}"
+    accept_hostkey: yes
+
+- name: clone admin
+  git:
+    repo: git@bitbucket.org:zoadilack/tavro-admin.git
+    dest: /var/www/tavro/admin
+    version: "{{ app_env }}"
+    key_file: "{{ GIT_PRIVATE_KEY }}"
+    accept_hostkey: yes
