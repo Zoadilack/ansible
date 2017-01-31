@@ -1,7 +1,4 @@
 ---
-GIT_PRIVATE_KEY: ~/.ssh/id_rsa
-BECOME_USER: vagrant
-HOME_DIR: /home/vagrant
 DATABASE_DRIVER: pdo_mysql
 DATABASE_HOST: 127.0.0.1
 DATABASE_PORT: 3306
@@ -10,7 +7,7 @@ DATABASE_USER: tavro
 DATABASE_PASSWORD: tavro
 APP_NAME: Tavro
 APP_VERSION: ~
-APP_EMAIL: info@tavro.io
+APP_EMAIL: "info@tavro.io"
 APP_EMAIL_NAME: Tavro
 MAILER_HOST: smtp.mailgun.org
 MAILER_USER: ~
@@ -19,11 +16,11 @@ MAILER_PORT: 587
 MAILER_ENCRYPTION: tls
 MAILER_AUTH_MODE: login
 MAILER_PASSWORD: ~
-MAILGUN_URL: 'https://api.mailgun.net/v3/zoadilack.com'
+MAILGUN_URL: "https://api.mailgun.net/v3/zoadilack.com"
 MAILGUN_API_KEY: ~
-DEBUG_EMAIL: dev@zoadilack.com
+DEBUG_EMAIL: "dev@zoadilack.com"
 LOCALE: en
-TIMEZONE: America/Los_Angeles
+TIMEZONE: "America/Los_Angeles"
 LOGIN_ATTEMPT_MINUTES: 1
 MAX_LOGIN_ATTEMPTS: 3
 SECRET: ""
@@ -35,11 +32,11 @@ JWT_TOKEN_TTL: 86400
 AWS_SDK_VERSION: '2006-03-01'
 AWS_ACCESS_KEY_ID: ~
 AWS_SECRET_ACCESS_KEY: ~
-AWS_S3_REGION: us-east-1
-ASSET_BUCKET: tavro-assets-staging
-FILE_BUCKET: tavro-files-staging
+AWS_S3_REGION: us-west-1
+ASSET_BUCKET: ~
+FILE_BUCKET: ~
 AMAZON_S3_URL: 'https://s3.amazonaws.com'
 SLACK_API_TOKEN: ~
-SLACK_CHANNEL_NAME: '#tavro-staging'
+SLACK_CHANNEL_NAME: '#tavro-dev'
 LOGENTRIES_TOKEN: ~
 LOGENTRIES_KEY: ~

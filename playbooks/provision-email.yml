@@ -11,5 +11,5 @@
                   password={{ mail_password }}
                   to="Developers <dev@zoadilack.com>"
                   from="Tavro Bot"
-                  subject="Tavro {{app_env}} Server Provisioned"
-                  body='Tavro {{app_env}} provisioned at {{ inventory_hostname }}.'
+                  subject="Tavro {{tavro_env}} Server Provisioned"
+                  body='Tavro {{tavro_env}} provisioned at {{ inventory_hostname }}.'

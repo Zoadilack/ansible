@@ -11,15 +11,15 @@
 
     - name: drop database
       shell: php {{api_root}}bin/console doctrine:database:drop --if-exists --force
-      #failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "hosts"
 
     - name: recreate database
       shell: php {{api_root}}bin/console doctrine:database:create
-      #failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "hosts"
 
     - name: execute migrations
       shell: php {{api_root}}bin/console doctrine:migrations:migrate --no-interaction
-      #failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "hosts"
 
     - debug: msg="Tavro database reset on {{ inventory_hostname }}"
-      #failed_when: inventory_hostname != "vagrant"
+      #failed_when: inventory_hostname != "hosts"

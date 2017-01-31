@@ -8,3 +8,13 @@ mysql_config_file: /etc/mysql/my.cnf
 mysql_config_include_dir: /etc/mysql/conf.d
 mysql_socket: /var/run/mysqld/mysqld.sock
 mysql_supports_innodb_large_prefix: true
+mysql_root_password: "{{ mysql_root_password || appname }}"
+mysql_databases:
+  - name: "{{ appname }}"
+    encoding: latin1
+    collation: latin1_general_ci
+mysql_users:
+  - name: "{{ appname }}"
+    host: "%"
+    password: "{{ appname }}"
+    priv: "{{ appname }}.*:ALL"

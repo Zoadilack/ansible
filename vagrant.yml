@@ -3,17 +3,17 @@
   become: true
   become_user: root
   vars:
-    app_env: "dev"
+    tavro_env: "vagrant"
   vars_files:
-    - vars/vagrant.yml
-    - vars/all.yml
+    - config/env.yml
+    - config/parameters.yml
   roles:
     - role: server
+    - { role: letsencrypt, tags: [ tavro_env ] }
     - role: composer
     - role: nginx
     - role: mysql
     - role: phpunit
-    - role: vagrant
-    - role: tavro
+    - { role: tavro, tags: [ tavro_env ] }
 
 - include: playbooks/install-dev.yml
