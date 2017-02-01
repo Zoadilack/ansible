@@ -3,4 +3,4 @@
 .pem
 .key
 .crt
-vars/parameters.yml
+config/*.yml
