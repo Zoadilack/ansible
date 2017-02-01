@@ -1,19 +1,15 @@
 ---
 - hosts: all
-  tags: vagrant
   become: true
   become_user: root
   vars_files:
-    - config/vagrant.yml
+    - config/admin.yml
     - config/parameters.yml
   roles:
     - role: server
+    - { role: letsencrypt, tags: [ tavro_env ] }
     - role: composer
     - role: nginx
-    - role: mysql
     - role: phpunit
-    - role: tavro-api
-    - role: tavro-admin
-    - role: tavro
-
-- include: playbooks/install-dev.yml
+    - { role: tavro-admin, tags: [ tavro_env ] }
+    - { role: tavro, tags: [ tavro_env ] }

@@ -5,17 +5,26 @@ server {
     ssl_certificate             /etc/nginx/ssl/{{appname}}.crt;
     ssl_certificate_key         /etc/nginx/ssl/{{appname}}.key;
 
-    ssl_session_timeout         30m;
+    ssl_session_timeout         300m;
 
     ssl_protocols               TLSv1 TLSv1.1 TLSv1.2;
     ssl_ciphers                 EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
     ssl_prefer_server_ciphers   on;
 
-    server_name api.{{ hostname }};
+    server_name {{ ADMIN_HOSTNAME }};
 
-    add_header Access-Control-Allow-Origin api.{{ hostname }};
-    add_header Access-Control-Allow-Origin app.{{ hostname }};
-    add_header Access-Control-Allow-Origin admin.{{ hostname }};
+    set $cors "";
+
+    if ($http_origin ~* (.*\.{{hostname}})) {
+        set $cors "true";
+    }
+
+    if ($cors = "true") {
+        add_header 'Access-Control-Allow-Origin' "$http_origin";
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, DELETE, PUT';
+        add_header 'Access-Control-Allow-Credentials' 'true';
+        add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
+    }
 
     error_log /var/log/nginx/tavro.error.log;
     access_log /var/log/nginx/tavro.access.log;
@@ -55,11 +64,11 @@ server {
     # strip app.php/ prefix if it is present
     rewrite ^/app_dev\.php/?(.*)$ /$1 permanent;
 
-    root /var/www/tavro/api/web;
+    root {{ symfony_root }}web;
 
     location / {
 
-        index app_dev.php;
+        index {{ symfony_controller }}.php;
         try_files $uri @rewriteapp;
 
         ## Deny all known bots
@@ -95,6 +104,6 @@ server {
 
 server {
     listen 80;
-    server_name api.{{ hostname }};
+    server_name {{ ADMIN_HOSTNAME }};
     return 301 https://$server_name$request_uri;
 }

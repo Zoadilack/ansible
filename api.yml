@@ -2,12 +2,8 @@
 - hosts: all
   become: true
   become_user: root
-  vars:
-    tavro_env: "staging"
-    hostname: "tavro.io"
-    appname: "tavro"
   vars_files:
-    - config/env.yml
+    - config/api.yml
     - config/parameters.yml
   roles:
     - role: server
@@ -15,6 +11,5 @@
     - role: composer
     - role: nginx
     - role: phpunit
+    - { role: tavro-api, tags: [ tavro_env ] }
     - { role: tavro, tags: [ tavro_env ] }
-
-- include: playbooks/install-staging.yml

@@ -29,8 +29,6 @@ parameters:
     app_hostname: "{{APP_HOSTNAME}}"
     api_hostname: "{{API_HOSTNAME}}"
     admin_hostname: "{{ADMIN_HOSTNAME}}"
-    jwt_token_passphrase: "{{JWT_TOKEN_PASSPHRASE}}"
-    jwt_token_ttl: {{JWT_TOKEN_TTL}}
     aws_sdk_version: {{AWS_SDK_VERSION}}
     aws_access_key_id: {{AWS_ACCESS_KEY_ID}}
     aws_secret_access_key: {{AWS_SECRET_ACCESS_KEY}}
@@ -39,6 +37,6 @@ parameters:
     file_bucket: "{{FILE_BUCKET}}"
     amazon_s3_url: "https://s3.amazonaws.com"
     slack_api_token: "{{SLACK_API_TOKEN}}"
-    slack_channel_name: "{{SLACK_CHANNEL_NAME}}"
+    slack_channel_name: #tavro-{{ tavro_env }}-admin
     logentries_token: "{{LOGENTRIES_TOKEN}}"
     logentries_key: "{{LOGENTRIES_KEY}}"

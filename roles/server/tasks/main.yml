@@ -51,41 +51,41 @@
   become: true
 
 - name: make sure ssh config exists
-  file: dest="{{ HOME_DIR }}/.ssh/config" state=touch mode=0600
-  become_user: "{{ BECOME_USER }}"
+  file: dest="{{ home_dir }}/.ssh/config" state=touch mode=0600
+  become_user: "{{ become_user }}"
 
 - name: ensure github.com is a known host
   lineinfile:
-    dest: "{{ HOME_DIR }}/.ssh/known_hosts"
+    dest: "{{ home_dir }}/.ssh/known_hosts"
     create: yes
     state: present
     line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
     regexp: "^github\\.com"
-  become_user: "{{ BECOME_USER }}"
+  become_user: "{{ become_user }}"
 
 - name: ensure bitbucket.org is a known host
   lineinfile:
-    dest: "{{ HOME_DIR }}/.ssh/known_hosts"
+    dest: "{{ home_dir }}/.ssh/known_hosts"
     create: yes
     state: present
     line: "{{ lookup('pipe', 'ssh-keyscan -t rsa bitbucket.org') }}"
     regexp: "^bitbucket\\.org"
-  become_user: "{{ BECOME_USER }}"
+  become_user: "{{ become_user }}"
 
 - name: ensure bitbucket.org is added to ssh config
   lineinfile:
-    dest: "{{ HOME_DIR }}/.ssh/config"
+    dest: "{{ home_dir }}/.ssh/config"
     create: yes
     state: present
     line: "{{ lookup('pipe', 'echo \"Host bitbucket.org\n\tStrictHostKeyChecking no\n\"') }}"
     regexp: "^bitbucket\\.org"
-  become_user: "{{ BECOME_USER }}"
+  become_user: "{{ become_user }}"
 
 - name: ensure github.com is added to ssh config
   lineinfile:
-    dest: "{{ HOME_DIR }}/.ssh/config"
+    dest: "{{ home_dir }}/.ssh/config"
     create: yes
     state: present
     line: "{{ lookup('pipe', 'echo \"Host github.com\n\tStrictHostKeyChecking no\n\"') }}"
     regexp: "^github\\.com"
-  become_user: "{{ BECOME_USER }}"
+  become_user: "{{ become_user }}"

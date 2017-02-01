@@ -1,58 +1,19 @@
 ---
+- name: Set authorized key took from file
+  authorized_key:
+    user: "{{authorized_key_user}}"
+    state: present
+    key: "{{ lookup('file', '{{authorized_key}}') }}"
+
 - name: setup symfony binary alias
-  file: src="{{api_root}}bin/console" dest="{{api_root}}symfony" state=link
+  file: src="{{web_root}}api/bin/console" dest="{{web_root}}api/symfony" state=link
   tags:
-    - hosts
+    - vagrant
 
-- name: make sure the keys dir exists
-  file: path="{{api_root}}app/keys" state=directory mode=0777 force=yes
-  become: true
-  become_user: root
-  tags:
-    - hosts
-    - staging
-    - prod
-
-- name: generate private key
-  command: openssl genrsa -out private.pem -aes256 -passout pass:tavro 4096
+- name: clear all symfony cache
+  command: php symfony cache:clear
   args:
-    chdir: "{{api_root}}app/keys"
-  tags:
-    - hosts
-    - staging
-    - prod
-
-- name: generate public key
-  command: openssl rsa -passin pass:tavro -pubout -in private.pem -out public.pem
-  args:
-    chdir: "{{api_root}}app/keys"
-  tags:
-    - hosts
-    - staging
-    - prod
-
-- name: Create parameters file
-  template:
-    dest: "{{api_root}}app/config/parameters.yml"
-    src: templates/parameters.yml.j2
-    owner: www-data
-    group: www-data
-    mode: 0644
-  tags:
-    - staging
-    - prod
-  
-- stat: path=/var/swapfile
-  register: swapfile
-
-# @TODO: automate this with Ansible instead of a shell script
-- name: create swapfile
-  shell: bash /var/www/tavro/provisioning/misc/scripts/swapfile.sh
-  when: swapfile.stat.exists == False
-  become: true
-  tags:
-    - hosts
-    - prod
+    chdir: "{{web_root}}api"
 
 - name: restart nginx
   service: name=nginx state=restarted
@@ -61,3 +22,9 @@
 - name: restart php7.0-fpm
   service: name=php7.0-fpm state=restarted
   become: true
+
+- name: restart mysql
+  service: name=php7.0-fpm state=restarted
+  become: true
+  tags:
+    - vagrant

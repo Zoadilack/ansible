@@ -9,7 +9,7 @@
   lineinfile: dest=/etc/apt/sources.list line="deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx"
 
 - name: Update apt
-  apt: update_cache=yes
+  apt: update_cache=yes cache_valid_time=3600
 
 - name: install nginx + packages
   apt: pkg=nginx state=present
@@ -29,18 +29,18 @@
 - name: update fpm port
   lineinfile: state=present dest="/etc/php/7.0/fpm/pool.d/www.conf" regexp="^listen = /run/php/php7.0-fpm.sock" line="listen = 127.0.0.1:9000"
 
-- name: copy configs
-  template: src={{item}}.conf.j2 dest=/etc/nginx/sites-available/{{item}}.conf owner=www-data group=www-data mode=0644
-  with_items: "{{hosts}}"
+- name: make ssl dir
+  file: dest=/etc/nginx/ssl state=directory mode=0755 owner=www-data group=www-data
+  become: true
+  tags:
+    - vagrant
 
-- name: enable vhosts
-  file:
-    src: /etc/nginx/sites-available/{{item}}.conf
-    dest: /etc/nginx/sites-enabled/{{item}}.conf
-    state: link
-  with_items: "{{hosts}}"
+- name: create self-signed SSL cert
+  command: openssl req -new -nodes -x509 -subj "/C=US/ST=Washington/L=Seattle/O=IT/CN=${ansible_fqdn}" -days 3650 -keyout /etc/nginx/ssl/{{appname}}.key -out /etc/nginx/ssl/{{appname}}.crt -extensions v3_ca creates=/etc/nginx/ssl/{{appname}}.crt
+  tags:
+    - vagrant
 
-- name: make sure 'www' dir is present
+- name: make sure {{ web_root }} dir is present
   file:
-    dest: /var/www/tavro
+    dest: "{{web_root}}"
     state: directory
