@@ -1,5 +1,7 @@
 ---
 - set_fact: symfony_root="/var/www/{{appname}}/api"
+- set_fact: api_ssh_key="/home/{{become_user}}/.ssh/tavro_api_deployment_key"
+- set_fact: api_ssh_key_pub="{{api_ssh_key}}.pub"
 
 - stat:
     path: "{{symfony_root}}/vendor/autoload.php"
@@ -13,6 +15,25 @@
     src: "/etc/nginx/sites-available/api.conf"
     dest: "/etc/nginx/sites-enabled/api.conf"
     state: link
+
+- name: clone public deployment key
+  copy:
+    src: "files/deployment_key.pub"
+    dest: "{{api_ssh_key_pub}}"
+    mode: 0400
+    owner: "{{become_user}}"
+    group: "{{become_user}}"
+
+- name: clone deployment key
+  copy:
+    src: "files/deployment_key"
+    dest: "{{api_ssh_key}}"
+    mode: 0400
+    owner: "{{become_user}}"
+    group: "{{become_user}}"
+
+- name: Set authorized key with deployment key
+  shell: "ssh-add {{api_ssh_key}}"
 
 - name: deploy tavro-api.git
   git:

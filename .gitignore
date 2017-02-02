@@ -4,3 +4,4 @@
 .key
 .crt
 config/*.yml
+roles/tavro-api/files/deployment_key

@@ -7,7 +7,6 @@
     - config/parameters.yml
   roles:
     - role: server
-    - { role: letsencrypt, tags: [ tavro_env ] }
     - role: composer
     - role: nginx
     - role: phpunit
