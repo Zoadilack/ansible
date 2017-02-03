@@ -5,35 +5,37 @@
     path: "{{symfony_root}}/vendor/autoload.php"
   register: autoloader
 
-- name: build admin configuration for nginx
+- name: ADMIN | build admin configuration for nginx
   template: src="admin.conf.j2" dest="/etc/nginx/sites-available/admin.conf" owner=www-data group=www-data mode=0644
 
-- name: enable admin virtual host
+- name: ADMIN | enable admin virtual host
   file:
     src: "/etc/nginx/sites-available/admin.conf"
     dest: "/etc/nginx/sites-enabled/admin.conf"
     state: link
 
-- name: deploy tavro-admin.git
-  git:
-    repo: git@bitbucket.org:zoadilack/tavro-admin.git
-    dest: "{{symfony_root}}"
-    version: "{{tavro_version}}"
-    accept_hostkey: yes
-  tags:
-    - staging
-    - production
+- name: API | clear the symfony app cache
+  file:
+    dest: "{{symfony_root}}/var/cache"
+    state: absent
+  become: true
+  become_user: root
 
 # Do not restrict this to only if the file does NOT exists,
 # because we want to be able to override on demand with a new
 # set of config files in the provisioning root.
-- name: create parameters file for symfony app
+- name: ADMIN | create parameters file for symfony app
   template:
     dest: "{{symfony_root}}/app/config/parameters.yml"
     src: parameters.yml.j2
     mode: 0644
 
-- name: composer install
+- name: ADMIN | clear composer cache
+  composer:
+    command: clear-cache
+    working_dir: "{{symfony_root}}"
+
+- name: ADMIN | composer install
   composer:
     command: install
     arguments: --prefer-dist
@@ -42,7 +44,7 @@
   become: true
   become_user: "{{become_user}}"
 
-- name: composer update
+- name: ADMIN | composer update
   composer:
     command: update
     arguments: --prefer-dist
