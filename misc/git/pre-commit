@@ -6,7 +6,7 @@
 
     $projectName = basename(getcwd());
 
-    printf("Running PHPUnit tests\n");
+    printf("Running API Unit Tests\n");
     exec('cd api && phpunit', $output, $returnCode);
 
     if ($returnCode !== 0) {

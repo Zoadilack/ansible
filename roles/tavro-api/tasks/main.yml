@@ -3,6 +3,14 @@
 - set_fact: api_ssh_key="/home/{{become_user}}/.ssh/tavro_api_deployment_key"
 - set_fact: api_ssh_key_pub="{{api_ssh_key}}.pub"
 
+- set_fact:
+    composer_args: "--no-interaction --prefer-dist --no-scripts --ignore-platform-reqs --no-suggest"
+  when: tavro_env != 'production'
+
+- set_fact:
+    composer_args: "--no-interaction --prefer-dist --no-dev --no-suggest --classmap-authoritative"
+  when: tavro_env == 'production'
+
 - stat:
     path: "{{symfony_root}}/vendor/autoload.php"
   register: autoloader
@@ -55,7 +63,7 @@
 - name: API | composer install
   composer:
     command: install
-    arguments: --prefer-dist
+    arguments: "{{composer_args}}"
     working_dir: "{{symfony_root}}"
   when: autoloader.stat.exists == False
   become: true
@@ -64,7 +72,7 @@
 - name: API | composer update
   composer:
     command: update
-    arguments: --prefer-dist
+    arguments: "{{composer_args}}"
     working_dir: "{{symfony_root}}"
   when: autoloader.stat.exists == True
   become: true
