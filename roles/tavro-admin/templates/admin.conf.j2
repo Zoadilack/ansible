@@ -13,19 +13,6 @@ server {
 
     server_name {{ ADMIN_HOSTNAME }};
 
-    set $cors "";
-
-    if ($http_origin ~* (.*\.{{hostname}})) {
-        set $cors "true";
-    }
-
-    if ($cors = "true") {
-        add_header 'Access-Control-Allow-Origin' "$http_origin";
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, DELETE, PUT';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
-    }
-
     error_log /var/log/nginx/{{appname}}_{{tavro_env}}.error.log;
     access_log /var/log/nginx/{{appname}}_{{tavro_env}}.access.log;
 
@@ -74,6 +61,19 @@ server {
         ## Deny all known bots
         if ($http_user_agent ~* (libwww|Wget|LWP|damnBot|BBBike|java|spider|crawl) ) {
             return 403;
+        }
+
+        set $cors "";
+
+        if ($http_origin ~* (.*\.{{hostname}})) {
+            set $cors "true";
+        }
+
+        if ($cors = "true") {
+            add_header 'Access-Control-Allow-Origin' "$http_origin";
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, DELETE, PUT';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
         }
 
     }
