@@ -15,3 +15,45 @@
     src: "/etc/nginx/sites-available/api.conf"
     dest: "/etc/nginx/sites-enabled/api.conf"
     state: link
+
+# Do not restrict this to only if the file does NOT exists,
+# because we want to be able to override on demand with a new
+# set of config files in the provisioning root.
+- name: create parameters file for symfony app
+  template:
+    dest: "{{symfony_root}}/app/config/parameters.yml"
+    src: parameters.yml.j2
+    mode: 0644
+
+- name: make sure the keys dir exists
+  file: path="{{symfony_root}}/app/keys" state=directory mode=0777 force=yes
+  become: true
+  become_user: root
+
+- name: generate private key for JWT authentication
+  command: openssl genrsa -out private.pem -aes256 -passout pass:tavro 4096
+  args:
+    chdir: "{{symfony_root}}/app/keys"
+
+- name: generate public key for JWT authentication
+  command: openssl rsa -passin pass:tavro -pubout -in private.pem -out public.pem
+  args:
+    chdir: "{{web_root}}api/app/keys"
+
+- name: composer install
+  composer:
+    command: install
+    arguments: --prefer-dist
+    working_dir: "{{symfony_root}}"
+  when: autoloader.stat.exists == False
+  become: true
+  become_user: "{{become_user}}"
+
+- name: composer update
+  composer:
+    command: update
+    arguments: --prefer-dist
+    working_dir: "{{symfony_root}}"
+  when: autoloader.stat.exists == True
+  become: true
+  become_user: "{{become_user}}"

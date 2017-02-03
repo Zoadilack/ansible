@@ -1,12 +1,6 @@
 ---
-- name: Set authorized key took from file
-  authorized_key:
-    user: "{{authorized_key_user}}"
-    state: present
-    key: "{{ lookup('file', '{{authorized_key}}') }}"
-
 - name: setup symfony binary alias
-  file: src="{{web_root}}api/bin/console" dest="{{web_root}}api/symfony" state=link
+  file: src="{{web_root}}api/bin/console" dest="{{web_root}}api/symfony" state=link force=yes
   tags:
     - vagrant
 
