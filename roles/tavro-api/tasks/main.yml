@@ -11,10 +11,6 @@
     composer_args: "--no-interaction --prefer-dist --no-dev --no-suggest --classmap-authoritative"
   when: tavro_env == 'production'
 
-- stat:
-    path: "{{symfony_root}}/vendor/autoload.php"
-  register: autoloader
-
 - name: API | build api configuration for nginx
   template: src="api.conf.j2" dest="/etc/nginx/sites-available/api.conf" owner=www-data group=www-data mode=0644
 
@@ -46,12 +42,12 @@
   become_user: root
 
 - name: API | generate private key for JWT authentication
-  command: openssl genrsa -out private.pem -aes256 -passout pass:tavro 4096
+  command: openssl genrsa -out private.pem -aes256 -passout pass:{{JWT_TOKEN_PASSPHRASE}} 4096
   args:
     chdir: "{{symfony_root}}/app/keys"
 
 - name: API | generate public key for JWT authentication
-  command: openssl rsa -passin pass:tavro -pubout -in private.pem -out public.pem
+  command: openssl rsa -passin pass:{{JWT_TOKEN_PASSPHRASE}} -pubout -in private.pem -out public.pem
   args:
     chdir: "{{web_root}}api/app/keys"
 
