@@ -3,7 +3,25 @@
 
 - stat:
     path: "{{symfony_root}}/vendor/autoload.php"
+
   register: autoloader
+- set_fact:
+    no_dev: no
+    ignore_platform_reqs: yes
+    no_plugins: no
+    no_scripts: no
+    optimize_autoloader: no
+    prefer_dist: yes
+  when: tavro_env != 'production'
+
+- set_fact:
+    no_dev: yes
+    ignore_platform_reqs: no
+    no_plugins: no
+    no_scripts: yes
+    optimize_autoloader: yes
+    prefer_dist: yes
+  when: tavro_env == 'production'
 
 - name: ADMIN | build admin configuration for nginx
   template: src="admin.conf.j2" dest="/etc/nginx/sites-available/admin.conf" owner=www-data group=www-data mode=0644
@@ -35,20 +53,30 @@
     command: clear-cache
     working_dir: "{{symfony_root}}"
 
-- name: ADMIN | composer install
+- name: API | composer install
   composer:
     command: install
-    arguments: --prefer-dist
     working_dir: "{{symfony_root}}"
+    no_dev: "{{no_dev}}"
+    ignore_platform_reqs: "{{ignore_platform_reqs}}"
+    no_plugins: "{{no_plugins}}"
+    no_scripts: "{{no_scripts}}"
+    optimize_autoloader: "{{optimize_autoloader}}"
+    prefer_dist: "{{prefer_dist}}"
   when: autoloader.stat.exists == False
   become: true
   become_user: "{{become_user}}"
 
-- name: ADMIN | composer update
+- name: API | composer update
   composer:
     command: update
-    arguments: --prefer-dist
     working_dir: "{{symfony_root}}"
+    no_dev: "{{no_dev}}"
+    ignore_platform_reqs: "{{ignore_platform_reqs}}"
+    no_plugins: "{{no_plugins}}"
+    no_scripts: "{{no_scripts}}"
+    optimize_autoloader: "{{optimize_autoloader}}"
+    prefer_dist: "{{prefer_dist}}"
   when: autoloader.stat.exists == True
   become: true
   become_user: "{{become_user}}"

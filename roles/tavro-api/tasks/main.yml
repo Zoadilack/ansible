@@ -1,15 +1,27 @@
 ---
 - set_fact: symfony_root="/var/www/{{appname}}/api"
-- set_fact: api_ssh_key="/home/{{become_user}}/.ssh/tavro_api_deployment_key"
-- set_fact: api_ssh_key_pub="{{api_ssh_key}}.pub"
 
 - set_fact:
-    composer_args: "--no-interaction --prefer-dist --no-scripts --ignore-platform-reqs --no-suggest"
+    no_dev: no
+    ignore_platform_reqs: yes
+    no_plugins: no
+    no_scripts: no
+    optimize_autoloader: no
+    prefer_dist: yes
   when: tavro_env != 'production'
 
 - set_fact:
-    composer_args: "--no-interaction --prefer-dist --no-dev --no-suggest --classmap-authoritative"
+    no_dev: yes
+    ignore_platform_reqs: no
+    no_plugins: no
+    no_scripts: yes
+    optimize_autoloader: yes
+    prefer_dist: yes
   when: tavro_env == 'production'
+
+- stat:
+    path: "{{symfony_root}}/vendor/autoload.php"
+  register: autoloader
 
 - name: API | build api configuration for nginx
   template: src="api.conf.j2" dest="/etc/nginx/sites-available/api.conf" owner=www-data group=www-data mode=0644
@@ -59,8 +71,13 @@
 - name: API | composer install
   composer:
     command: install
-    arguments: "{{composer_args}}"
     working_dir: "{{symfony_root}}"
+    no_dev: "{{no_dev}}"
+    ignore_platform_reqs: "{{ignore_platform_reqs}}"
+    no_plugins: "{{no_plugins}}"
+    no_scripts: "{{no_scripts}}"
+    optimize_autoloader: "{{optimize_autoloader}}"
+    prefer_dist: "{{prefer_dist}}"
   when: autoloader.stat.exists == False
   become: true
   become_user: "{{become_user}}"
@@ -68,8 +85,13 @@
 - name: API | composer update
   composer:
     command: update
-    arguments: "{{composer_args}}"
     working_dir: "{{symfony_root}}"
+    no_dev: "{{no_dev}}"
+    ignore_platform_reqs: "{{ignore_platform_reqs}}"
+    no_plugins: "{{no_plugins}}"
+    no_scripts: "{{no_scripts}}"
+    optimize_autoloader: "{{optimize_autoloader}}"
+    prefer_dist: "{{prefer_dist}}"
   when: autoloader.stat.exists == True
   become: true
   become_user: "{{become_user}}"
