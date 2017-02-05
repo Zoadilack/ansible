@@ -5,34 +5,25 @@
     path: "{{symfony_root}}/vendor/autoload.php"
 
   register: autoloader
+
 - set_fact:
-    no_dev: no
-    ignore_platform_reqs: yes
-    no_plugins: no
-    no_scripts: no
-    optimize_autoloader: no
-    prefer_dist: yes
+    composer_args="--prefer-dist --no-plugins"
   when: tavro_env != 'production'
 
 - set_fact:
-    no_dev: yes
-    ignore_platform_reqs: no
-    no_plugins: no
-    no_scripts: yes
-    optimize_autoloader: yes
-    prefer_dist: yes
+    composer_args="--optimize-autoloader --prefer-dist --no-dev --no-plugins"
   when: tavro_env == 'production'
 
-- name: ADMIN | build admin configuration for nginx
+- name: build admin configuration for nginx
   template: src="admin.conf.j2" dest="/etc/nginx/sites-available/admin.conf" owner=www-data group=www-data mode=0644
 
-- name: ADMIN | enable admin virtual host
+- name: enable admin virtual host
   file:
     src: "/etc/nginx/sites-available/admin.conf"
     dest: "/etc/nginx/sites-enabled/admin.conf"
     state: link
 
-- name: API | clear the symfony app cache
+- name: clear the symfony app cache
   file:
     dest: "{{symfony_root}}/var/cache"
     state: absent
@@ -42,41 +33,26 @@
 # Do not restrict this to only if the file does NOT exists,
 # because we want to be able to override on demand with a new
 # set of config files in the provisioning root.
-- name: ADMIN | create parameters file for symfony app
+- name: create parameters file for symfony app
   template:
     dest: "{{symfony_root}}/app/config/parameters.yml"
     src: parameters.yml.j2
     mode: 0644
 
-- name: ADMIN | clear composer cache
+- name: clear composer cache
   composer:
     command: clear-cache
     working_dir: "{{symfony_root}}"
 
-- name: API | composer install
-  composer:
-    command: install
-    working_dir: "{{symfony_root}}"
-    no_dev: "{{no_dev}}"
-    ignore_platform_reqs: "{{ignore_platform_reqs}}"
-    no_plugins: "{{no_plugins}}"
-    no_scripts: "{{no_scripts}}"
-    optimize_autoloader: "{{optimize_autoloader}}"
-    prefer_dist: "{{prefer_dist}}"
+# @TODO: convert this to the composer module, when it stops acting stupid
+- name: composer install
+  command: "composer update {{composer_args}}"
+  args:
+    chdir: "{{symfony_root}}"
   when: autoloader.stat.exists == False
-  become: true
-  become_user: "{{become_user}}"
 
-- name: API | composer update
-  composer:
-    command: update
-    working_dir: "{{symfony_root}}"
-    no_dev: "{{no_dev}}"
-    ignore_platform_reqs: "{{ignore_platform_reqs}}"
-    no_plugins: "{{no_plugins}}"
-    no_scripts: "{{no_scripts}}"
-    optimize_autoloader: "{{optimize_autoloader}}"
-    prefer_dist: "{{prefer_dist}}"
+- name: composer update
+  command: "composer update {{composer_args}}"
+  args:
+    chdir: "{{symfony_root}}"
   when: autoloader.stat.exists == True
-  become: true
-  become_user: "{{become_user}}"
