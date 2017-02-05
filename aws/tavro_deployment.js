@@ -17,6 +17,7 @@ exports.handler = function(event, context) {
 	    }, function(err, data) {
             if (err) {
                 context.done('Error', 'Error getting s3 object: ' + err);
+                console.log('Error getting s3 object: ' + err);
             } else {
                 console.log('Creating deployment');
                 createDeployment(data);
@@ -48,6 +49,7 @@ exports.handler = function(event, context) {
             function (err, data) {
                 if (err) {
                     context.done('Error','Error creating deployment: ' + err);
+                    console.log('Error creating deployment: ' + err);
                 }
                 else {
                     console.log(data);           // successful response
