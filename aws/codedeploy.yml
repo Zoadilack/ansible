@@ -6,7 +6,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 app_name = os.getenv('AWS_CODEDEPLOY_APPLICATION_NAME')
-BUCKET_KEY = "%-%s.tar.gz" % (app_name.lower(), strftime("%Y%m%d%H%M%S"))
+BUCKET_KEY = "%s-%s.tar.gz" % (app_name.lower(), strftime("%Y%m%d%H%M%S"))
 
 def upload_to_s3(artifact):
     """
