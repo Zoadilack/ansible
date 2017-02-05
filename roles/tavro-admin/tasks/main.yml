@@ -7,11 +7,11 @@
   register: autoloader
 
 - set_fact:
-    composer_args="--prefer-dist --no-plugins"
+    composer_args="--prefer-dist"
   when: tavro_env != 'production'
 
 - set_fact:
-    composer_args="--optimize-autoloader --prefer-dist --no-dev --no-plugins"
+    composer_args="--optimize-autoloader --prefer-dist --no-dev"
   when: tavro_env == 'production'
 
 - name: build admin configuration for nginx
