@@ -23,7 +23,7 @@ def upload_to_s3(artifact):
             Bucket=os.getenv('S3_CODEDEPLOY_BUCKET'),
             Key=BUCKET_KEY,
             Metadata={
-              'application-name':,os.getenv('AWS_CODEDEPLOY_APPLICATION_NAME')
+              'application-name':os.getenv('AWS_CODEDEPLOY_APPLICATION_NAME')
               'deploymentgroup-name':os.getenv('DEPLOYMENT_GROUP_NAME')
             }
         )
