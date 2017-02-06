@@ -14,6 +14,5 @@
     - role: phpunit
     - role: tavro-api
     - role: tavro-admin
-    - role: tavro
 
 - include: playbooks/install-dev.yml

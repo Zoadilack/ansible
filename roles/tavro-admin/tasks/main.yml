@@ -57,3 +57,11 @@
   args:
     chdir: "{{symfony_root}}"
   when: autoloader.stat.exists == True
+
+- name: restart nginx
+  service: name=nginx state=restarted
+  become: true
+
+- name: restart php7.0-fpm
+  service: name=php7.0-fpm state=restarted
+  become: true

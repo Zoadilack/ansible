@@ -11,4 +11,3 @@
     - role: nginx
     - role: phpunit
     - { role: tavro-api, tags: [ tavro_env ] }
-    - { role: tavro, tags: [ tavro_env ] }
