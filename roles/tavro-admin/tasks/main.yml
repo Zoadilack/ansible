@@ -14,21 +14,22 @@
     composer_args="--optimize-autoloader --prefer-dist --no-dev"
   when: tavro_env == 'production'
 
+- set_fact:
+    tavro_admin_nginx_config_file="admin.conf.j2"
+  when: tavro_env == 'vagrant'
+
+- set_fact:
+    tavro_admin_nginx_config_file="admin-ssl.conf.j2"
+  when: tavro_env != 'vagrant'
+
 - name: build admin configuration for nginx
-  template: src="admin.conf.j2" dest="/etc/nginx/sites-available/admin.conf" owner=www-data group=www-data mode=0644
+  template: src="{{tavro_admin_nginx_config_file}}" dest="/etc/nginx/sites-available/admin.conf" owner=www-data group=www-data mode=0644
 
 - name: enable admin virtual host
   file:
     src: "/etc/nginx/sites-available/admin.conf"
     dest: "/etc/nginx/sites-enabled/admin.conf"
     state: link
-
-- name: clear the symfony app cache
-  file:
-    dest: "{{symfony_root}}/var/cache"
-    state: absent
-  become: true
-  become_user: root
 
 # Do not restrict this to only if the file does NOT exists,
 # because we want to be able to override on demand with a new
