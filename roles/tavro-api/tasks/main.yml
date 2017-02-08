@@ -2,6 +2,7 @@
 - set_fact: symfony_root="{{web_root}}/api"
 - set_fact: doc_root="{{web_root}}/api-docs"
 - set_fact: DOCS_HOSTNAME="api-docs.{{hostname}}"
+- set_fact: BLUEPRINT_HOSTNAME="apib.{{hostname}}"
 
 - set_fact:
     composer_args="--prefer-dist --no-plugins"
@@ -37,10 +38,23 @@
   tags:
     - vagrant
 
+- name: build apib configuration for nginx
+  template: src="apib.conf.j2" dest="/etc/nginx/sites-available/apib.conf" owner=www-data group=www-data mode=0644
+  tags:
+    - vagrant
+
 - name: enable api-docs virtual host
   file:
     src: "/etc/nginx/sites-available/api-docs.conf"
     dest: "/etc/nginx/sites-enabled/api-docs.conf"
+    state: link
+  tags:
+    - vagrant
+
+- name: enable apib virtual host
+  file:
+    src: "/etc/nginx/sites-available/apib.conf"
+    dest: "/etc/nginx/sites-enabled/apib.conf"
     state: link
   tags:
     - vagrant
@@ -91,11 +105,15 @@
     url: http://get.sensiolabs.org/sami.phar
     dest: "{{doc_root}}"
     mode: 0644
+  tags:
+    - vagrant
 
 - name: build api docs
   command: "php sami.phar update config.php -v"
   args:
     chdir: "{{doc_root}}"
+  tags:
+    - vagrant
 
 - name: restart nginx
   service: name=nginx state=restarted

@@ -5,7 +5,6 @@
 
 - stat:
     path: "{{symfony_root}}/vendor/autoload.php"
-
   register: autoloader
 
 - set_fact:
@@ -61,6 +60,8 @@
   args:
     chdir: "{{symfony_root}}"
   when: autoloader.stat.exists == False
+  become: true
+  become_user: "{{become_user}}"
 
 - name: composer update
   command: "composer update {{composer_args}}"
@@ -75,11 +76,15 @@
     url: http://get.sensiolabs.org/sami.phar
     dest: "{{doc_root}}"
     mode: 0644
+  tags:
+    - vagrant
 
 - name: build api docs
   command: "php sami.phar update config.php -v"
   args:
     chdir: "{{doc_root}}"
+  tags:
+    - vagrant
 
 - name: restart nginx
   service: name=nginx state=restarted
