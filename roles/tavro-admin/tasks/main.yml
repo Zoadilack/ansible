@@ -1,9 +1,10 @@
 ---
-- set_fact: symfony_root="/var/www/{{appname}}/admin"
+- set_fact: symfony_root="{{web_root}}/admin"
+- set_fact: doc_root="{{web_root}}/admin-docs"
+- set_fact: DOCS_HOSTNAME="admin-docs.{{hostname}}"
 
 - stat:
     path: "{{symfony_root}}/vendor/autoload.php"
-
   register: autoloader
 
 - set_fact:
@@ -31,6 +32,19 @@
     dest: "/etc/nginx/sites-enabled/admin.conf"
     state: link
 
+- name: build admin configuration for nginx
+  template: src="docs.conf.j2" dest="/etc/nginx/sites-available/admin-docs.conf" owner=www-data group=www-data mode=0644
+  tags:
+    - vagrant
+
+- name: enable admin virtual host
+  file:
+    src: "/etc/nginx/sites-available/admin-docs.conf"
+    dest: "/etc/nginx/sites-enabled/admin-docs.conf"
+    state: link
+  tags:
+    - vagrant
+
 # Do not restrict this to only if the file does NOT exists,
 # because we want to be able to override on demand with a new
 # set of config files in the provisioning root.
@@ -40,23 +54,37 @@
     src: parameters.yml.j2
     mode: 0644
 
-- name: clear composer cache
-  composer:
-    command: clear-cache
-    working_dir: "{{symfony_root}}"
-
 # @TODO: convert this to the composer module, when it stops acting stupid
 - name: composer install
   command: "composer update {{composer_args}}"
   args:
     chdir: "{{symfony_root}}"
   when: autoloader.stat.exists == False
+  become: true
+  become_user: "{{become_user}}"
 
 - name: composer update
   command: "composer update {{composer_args}}"
   args:
     chdir: "{{symfony_root}}"
   when: autoloader.stat.exists == True
+  become: true
+  become_user: "{{become_user}}"
+
+- name: install friendsofphp/sami
+  get_url:
+    url: http://get.sensiolabs.org/sami.phar
+    dest: "{{doc_root}}"
+    mode: 0644
+  tags:
+    - vagrant
+
+- name: build api docs
+  command: "php sami.phar update config.php -v"
+  args:
+    chdir: "{{doc_root}}"
+  tags:
+    - vagrant
 
 - name: restart nginx
   service: name=nginx state=restarted
