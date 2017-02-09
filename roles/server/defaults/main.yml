@@ -21,6 +21,7 @@ server:
       - npm
       - mysql-client
       - php7.1
+      - php-xml
     remove_packages:
       - apache
       - php7.0
