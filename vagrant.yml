@@ -11,8 +11,8 @@
     - role: composer
     - role: nginx
     - role: mysql
+    - role: blackfire
     - role: phpunit
     - role: tavro-api
-    - role: tavro-admin
 
 - include: playbooks/install-dev.yml

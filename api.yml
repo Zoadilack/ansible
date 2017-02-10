@@ -10,4 +10,5 @@
     - role: composer
     - role: nginx
     - role: phpunit
+    - role: blackfire
     - { role: tavro-api, tags: [ tavro_env ] }
