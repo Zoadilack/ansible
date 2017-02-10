@@ -58,7 +58,7 @@ server {
 
         set $cors "";
 
-        if ($http_origin ~* (.*\.{{hostname}})) {
+        if ($http_origin ~ (localhost|.*\.{{hostname}})) {
             set $cors "true";
         }
 
