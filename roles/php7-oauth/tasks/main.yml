@@ -20,5 +20,5 @@
   when: oauth_config.stat.exists == False
 
 - service:
-    name: php7.1-fpm-sp
+    name: php7.0-fpm-sp
     state: restarted
