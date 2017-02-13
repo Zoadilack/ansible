@@ -1,0 +1,25 @@
+---
+- set_fact:
+    tavro_api_nginx_config_file="app.conf.j2"
+  when: tavro_env == 'vagrant'
+
+- set_fact:
+    tavro_api_nginx_config_file="app-ssl.conf.j2"
+  when: tavro_env != 'vagrant'
+
+- name: build app configuration for nginx
+  template: src="{{tavro_api_nginx_config_file}}" dest="/etc/nginx/sites-available/app.conf" owner=www-data group=www-data mode=0644
+
+- name: enable app virtual host
+  file:
+    src: "/etc/nginx/sites-available/app.conf"
+    dest: "/etc/nginx/sites-enabled/app.conf"
+    state: link
+
+- name: restart nginx
+  service: name=nginx state=restarted
+  become: true
+
+- name: restart php7.0-fpm
+  service: name=php7.0-fpm state=restarted
+  become: true

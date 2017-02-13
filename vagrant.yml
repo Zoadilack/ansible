@@ -14,5 +14,6 @@
     - role: blackfire
     - role: phpunit
     - role: tavro-api
+    - role: tavro-app
 
 - include: playbooks/install-dev.yml
