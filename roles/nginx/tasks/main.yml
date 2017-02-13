@@ -24,7 +24,7 @@
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=www-data group=www-data mode=0644
 
 - name: update fpm port
-  lineinfile: state=present dest="/etc/php/7.1/fpm/pool.d/www.conf" regexp="^listen = /run/php/php7.1-fpm.sock" line="listen = 127.0.0.1:9000"
+  lineinfile: state=present dest="/etc/php/7.0/fpm/pool.d/www.conf" regexp="^listen = /run/php/php7.0-fpm.sock" line="listen = 127.0.0.1:9000"
 
 - name: make ssl dir
   file: dest=/etc/nginx/ssl state=directory mode=0755 owner=www-data group=www-data

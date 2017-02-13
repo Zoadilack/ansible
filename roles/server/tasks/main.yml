@@ -2,14 +2,14 @@
 - name: fix proxy for Ubuntu
   shell: echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
 
-- name: Purge Apache2
-  apt: pkg={{item}} state=absent
-  with_items: "{{server.remove_packages}}"
-
-- name: Add ondrej php repository for latest php
-  apt_repository:
-    repo: "ppa:ondrej/php"
-    state: present
+- name: main | uninstall apache packages
+  apt: >
+    pkg={{ item }}
+    state=absent
+    purge=yes
+    force=yes
+  with_items:
+    - "{{server.remove_packages}}"
 
 - name: Update Apt Repos
   apt: update_cache=yes cache_valid_time=3600
