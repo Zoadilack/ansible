@@ -23,8 +23,7 @@ server:
       - php7.0
       - php-xml
     remove_packages:
-      - apache
-      - apache2
+      - apache2*
     timezone: UTC
     locale: en_US.UTF-8
     php7_packages:
