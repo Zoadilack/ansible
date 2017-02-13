@@ -1,3 +1,0 @@
----
-angular_root: "{{web_root}}/app"
-angular_port: "4000"
