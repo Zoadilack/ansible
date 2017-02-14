@@ -33,7 +33,6 @@
   become: yes
   become_user: "{{ become_user }}"
   git: repo=https://github.com/creationix/nvm.git dest=~/.nvm
-  when: nvm.stat.exists == False
 
 - name: Source nvm in ~/.profile
   become: yes
@@ -42,31 +41,19 @@
     dest=~/.profile
     line="source ~/.nvm/nvm.sh"
     create=yes
-  when: nvm.stat.exists == False
 
-- name: Install {{ node_version }}
-  command: nvm install {{ node_version }}
-  register: nvm_install_result
-  become: true
-  become_user: root
-  when: nvm.stat.exists == False
+- name: Install node {{ node_version }}
+  command: "nvm install {{ node_version }}"
 
 - name: Check if {{ node_version }} is the default node version
-  shell: nvm ls | grep -e 'default -> {{ node_version }}'
-  register: nvm_check_default
-  changed_when: False
-  ignore_errors: True
+  command: "nvm ls | grep -e 'default -> {{ node_version }}'"
   become: true
   become_user: root
 
 - name: Set default node version to {{ node_version }}
-  command: nvm alias default {{ node_version }}
-  when: nvm_check_default|failed
+  command: "nvm alias default {{ node_version }}"
   become: true
   become_user: root
-  
-- name: install node
-  shell: "nvm install {{node_version}}"
 
 - name: install node-sass
   command: npm install -g node-sass
