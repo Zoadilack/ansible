@@ -1,4 +1,6 @@
 ---
+- set_fact: tavro_app_dir="{{web_root}}/app"
+
 - set_fact:
     tavro_api_nginx_config_file="app.conf.j2"
   when: tavro_env == 'vagrant'
@@ -10,11 +12,83 @@
 - name: build app configuration for nginx
   template: src="{{tavro_api_nginx_config_file}}" dest="/etc/nginx/sites-available/app.conf" owner=www-data group=www-data mode=0644
 
+- name: is nvm installed?
+  stat:
+    path: ~/.nvm/nvm.sh
+  register: nvm
+
 - name: enable app virtual host
   file:
     src: "/etc/nginx/sites-available/app.conf"
     dest: "/etc/nginx/sites-enabled/app.conf"
     state: link
+
+- name: install packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - build-essential
+    - libssl-dev
+
+- name: Install nvm
+  become: yes
+  become_user: "{{ become_user }}"
+  git: repo=https://github.com/creationix/nvm.git dest=~/.nvm
+  when: nvm.stat.exists == False
+
+- name: Source nvm in ~/.profile
+  become: yes
+  become_user: "{{ become_user }}"
+  lineinfile: >
+    dest=~/.profile
+    line="source ~/.nvm/nvm.sh"
+    create=yes
+  when: nvm.stat.exists == False
+
+- name: Install {{ node_version }}
+  command: nvm install {{ node_version }}
+  register: nvm_install_result
+  become: true
+  become_user: root
+  when: nvm.stat.exists == False
+
+- name: Check if {{ node_version }} is the default node version
+  shell: nvm ls | grep -e 'default -> {{ node_version }}'
+  register: nvm_check_default
+  changed_when: False
+  ignore_errors: True
+  become: true
+  become_user: root
+
+- name: Set default node version to {{ node_version }}
+  command: nvm alias default {{ node_version }}
+  when: nvm_check_default|failed
+  become: true
+  become_user: root
+  
+- name: install node
+  shell: "nvm install {{node_version}}"
+
+- name: install node-sass
+  command: npm install -g node-sass
+  become: true
+  become_user: root
+
+- name: install yarn
+  command: npm install -g yarn
+  args:
+    chdir: "{{tavro_app_dir}}"
+  become: true
+  become_user: root
+
+- name: install dependencies with yarn
+  command: yarn install
+  args:
+    chdir: "{{tavro_app_dir}}"
+
+- name: run yarn
+  command: yarn start
+  args:
+    chdir: "{{tavro_app_dir}}"
 
 - name: restart nginx
   service: name=nginx state=restarted
