@@ -42,14 +42,18 @@
     state: link
 
 - name: install node-sass
-  command: npm install -g node-sass
+  npm:
+    name: node-sass
+    global: yes
+    state: present
   become: true
   become_user: root
 
 - name: install yarn
-  command: npm install -g yarn
-  args:
-    chdir: "{{tavro_app_dir}}"
+  npm:
+    name: yarn
+    global: yes
+    state: present
   become: true
   become_user: root
 
