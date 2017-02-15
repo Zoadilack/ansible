@@ -28,32 +28,18 @@
   with_items:
     - build-essential
     - libssl-dev
+    - python-software-properties
 
-- name: Install nvm
-  become: yes
-  become_user: "{{ become_user }}"
-  git: repo=https://github.com/creationix/nvm.git dest=~/.nvm
+- name: install nodejs
+  apt: pkg={{item}} state=latest
+  with_items:
+    - nodejs
 
-- name: Source nvm in ~/.profile
-  become: yes
-  become_user: "{{ become_user }}"
-  lineinfile: >
-    dest=~/.profile
-    line="source ~/.nvm/nvm.sh"
-    create=yes
-
-- name: Install node {{ node_version }}
-  command: "nvm install {{ node_version }}"
-
-- name: Check if {{ node_version }} is the default node version
-  command: "nvm ls | grep -e 'default -> {{ node_version }}'"
-  become: true
-  become_user: root
-
-- name: Set default node version to {{ node_version }}
-  command: "nvm alias default {{ node_version }}"
-  become: true
-  become_user: root
+- name: alias nodejs to node
+  file:
+    src: "/usr/bin/nodejs"
+    dest: "/usr/bin/node"
+    state: link
 
 - name: install node-sass
   command: npm install -g node-sass
@@ -69,11 +55,6 @@
 
 - name: install dependencies with yarn
   command: yarn install
-  args:
-    chdir: "{{tavro_app_dir}}"
-
-- name: run yarn
-  command: yarn start
   args:
     chdir: "{{tavro_app_dir}}"
 
