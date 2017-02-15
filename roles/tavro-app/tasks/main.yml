@@ -1,0 +1,67 @@
+---
+- set_fact: tavro_app_dir="{{web_root}}/app"
+
+- set_fact:
+    tavro_api_nginx_config_file="app.conf.j2"
+  when: tavro_env == 'vagrant'
+
+- set_fact:
+    tavro_api_nginx_config_file="app-ssl.conf.j2"
+  when: tavro_env != 'vagrant'
+
+- name: build app configuration for nginx
+  template: src="{{tavro_api_nginx_config_file}}" dest="/etc/nginx/sites-available/app.conf" owner=www-data group=www-data mode=0644
+
+- name: is nvm installed?
+  stat:
+    path: ~/.nvm/nvm.sh
+  register: nvm
+
+- name: enable app virtual host
+  file:
+    src: "/etc/nginx/sites-available/app.conf"
+    dest: "/etc/nginx/sites-enabled/app.conf"
+    state: link
+
+- name: install packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - build-essential
+    - libssl-dev
+    - python-software-properties
+
+- name: install nodejs
+  apt: pkg={{item}} state=latest
+  with_items:
+    - nodejs
+
+- name: alias nodejs to node
+  file:
+    src: "/usr/bin/nodejs"
+    dest: "/usr/bin/node"
+    state: link
+
+- name: install node-sass
+  command: npm install -g node-sass
+  become: true
+  become_user: root
+
+- name: install yarn
+  command: npm install -g yarn
+  args:
+    chdir: "{{tavro_app_dir}}"
+  become: true
+  become_user: root
+
+- name: install dependencies with yarn
+  command: yarn install
+  args:
+    chdir: "{{tavro_app_dir}}"
+
+- name: restart nginx
+  service: name=nginx state=restarted
+  become: true
+
+- name: restart php7.0-fpm
+  service: name=php7.0-fpm state=restarted
+  become: true
