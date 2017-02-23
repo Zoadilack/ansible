@@ -61,6 +61,8 @@
   command: yarn install
   args:
     chdir: "{{tavro_app_dir}}"
+  become: true
+  become_user: root
 
 - name: restart nginx
   service: name=nginx state=restarted
