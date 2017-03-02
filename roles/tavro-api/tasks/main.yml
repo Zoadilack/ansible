@@ -24,6 +24,11 @@
     path: "{{symfony_root}}/vendor/autoload.php"
   register: autoloader
 
+- name: physically delete the cache dir
+  file:
+    dest: "{{symfony_root}}/var/cache"
+    state: absent
+
 - name: build api configuration for nginx
   template: src="{{tavro_api_nginx_config_file}}" dest="/etc/nginx/sites-available/api.conf" owner=www-data group=www-data mode=0644
 
@@ -83,22 +88,24 @@
   args:
     chdir: "{{symfony_root}}/app/keys"
 
-# @TODO: convert this to the composer module, when it stops acting stupid
-- name: composer install
-  command: "composer update {{composer_args}}"
-  args:
-    chdir: "{{symfony_root}}"
-  when: autoloader.stat.exists == False
-  become: true
-  become_user: "{{become_user}}"
+## @TODO: convert this to the composer module, when it stops acting stupid
+## disabled for now as it's part of the install playbook
 
-- name: composer update
-  command: "composer update {{composer_args}}"
-  args:
-    chdir: "{{symfony_root}}"
-  when: autoloader.stat.exists == True
-  become: true
-  become_user: "{{become_user}}"
+#- name: composer install
+#  command: "composer update {{composer_args}}"
+#  args:
+#    chdir: "{{symfony_root}}"
+#  when: autoloader.stat.exists == False
+#  become: true
+#  become_user: "{{become_user}}"
+#
+#- name: composer update
+#  command: "composer update {{composer_args}}"
+#  args:
+#    chdir: "{{symfony_root}}"
+#  when: autoloader.stat.exists == True
+#  become: true
+#  become_user: "{{become_user}}"
 
 - name: install friendsofphp/sami
   get_url:
