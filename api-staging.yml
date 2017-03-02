@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  vars_files:
+    - config/api.yml
+    - config/parameters.yml
+  roles:
+    - role: server
+    - role: composer
+    - role: nginx
+    - role: phpunit
+    - role: blackfire
+    - { role: tavro-api, tags: [ tavro_env ] }

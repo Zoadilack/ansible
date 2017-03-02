@@ -12,6 +12,13 @@ server {
     #don't send the nginx version number in error pages and Server header
     server_tokens off;
 
+    # setup CORS support for Api requests, and enable cache server support
+    add_header 'Access-Control-Allow-Origin' '*' always;
+    add_header 'Access-Control-Allow-Credentials' 'true' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+    add_header 'Access-Control-Allow-Headers' 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+    add_header 'Vary' 'Origin';
+
     # config to don't allow the browser to render the page inside an frame or iframe
     # and avoid clickjacking http://en.wikipedia.org/wiki/Clickjacking
     # if you need to allow [i]frames, you can use SAMEORIGIN or even set an uri with ALLOW-FROM uri
@@ -54,19 +61,6 @@ server {
         ## Deny all known bots
         if ($http_user_agent ~* (libwww|Wget|LWP|damnBot|BBBike|java|spider|crawl) ) {
             return 403;
-        }
-
-        set $cors "";
-
-        if ($http_origin ~ (localhost:{{angular_port}}|.*\.{{hostname}})) {
-            set $cors "true";
-        }
-
-        if ($cors = "true") {
-            add_header 'Access-Control-Allow-Origin' "$http_origin";
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, DELETE, PUT';
-            add_header 'Access-Control-Allow-Credentials' 'true';
-            add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
         }
 
     }

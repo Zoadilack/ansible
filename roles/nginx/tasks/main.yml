@@ -9,7 +9,12 @@
   apt: update_cache=yes cache_valid_time=3600
 
 - name: install nginx + packages
-  apt: pkg=nginx state=present
+  apt:
+    pkg: "{{item}}"
+    state: present
+  with_items:
+    - nginx
+    - nginx-extras
 
 - name: set permissions on nginx logs dir
   file: path=/var/log/nginx mode=0777 owner=www-data group=www-data state=directory
