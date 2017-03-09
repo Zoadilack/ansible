@@ -1,0 +1,18 @@
+---
+- hosts: vagrant
+
+  any_errors_fatal: true
+
+  vars:
+    api_root: "/var/www/tavro/api/"
+    fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures"
+
+  tasks:
+    - name: install core data
+      shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures="{{api_root}}{{fixture_path}}/Core" --append
+    - debug: msg="Tavro Core Installation Complete on {{ inventory_hostname }}"
+
+    - name: install development fixtures
+      shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}/Dev --append
+
+    - debug: msg="Tavro Development API DB Installation Complete on {{ inventory_hostname }}"
