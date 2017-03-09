@@ -1,4 +1,6 @@
 ---
+- include: reset-db.yml
+
 - hosts: vagrant
 
   any_errors_fatal: true
