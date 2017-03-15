@@ -13,7 +13,7 @@ server {
     server_tokens off;
 
     # setup CORS support for Api requests, and enable cache server support
-    add_header 'Access-Control-Allow-Origin' '*' always;
+    add_header 'Access-Control-Allow-Origin' 'localhost:4000' always;
     add_header 'Access-Control-Allow-Credentials' 'true' always;
     add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
     add_header 'Access-Control-Allow-Headers' 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
