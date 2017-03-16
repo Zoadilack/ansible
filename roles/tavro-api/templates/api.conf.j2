@@ -13,11 +13,7 @@ server {
     server_tokens off;
 
     # setup CORS support for Api requests, and enable cache server support
-    add_header 'Access-Control-Allow-Origin' 'localhost:4000' always;
-    add_header 'Access-Control-Allow-Credentials' 'true' always;
-    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-    add_header 'Access-Control-Allow-Headers' 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
-    add_header 'Vary' 'Origin';
+    add_header "Access-Control-Allow-Origin" "http://localhost:4000" always;
 
     # config to don't allow the browser to render the page inside an frame or iframe
     # and avoid clickjacking http://en.wikipedia.org/wiki/Clickjacking
@@ -54,6 +50,23 @@ server {
     root {{ symfony_root }}/web;
 
     location / {
+
+        # always is required to add headers even if response's status is 4xx or 5xx
+        add_header 'Access-Control-Allow-Origin' "http://localhost:4000" always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With' always;
+        # required to be able to read Authorization header in frontend
+        add_header 'Access-Control-Expose-Headers' 'Authorization' always;
+
+        # 2 if are required, nginx treats each if block as a different context
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' "http://localhost:4000";
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With';
+
+            return 204;
+        }
+
 
         index {{ symfony_controller }}.php;
         try_files $uri @rewriteapp;
