@@ -12,7 +12,9 @@
   tasks:
 
     - name: reset cache
-      shell: php {{api_root}bin/console cache:clear    
+      shell: php bin/console cache:clear
+      args:
+        chdir: "{{api_root}}" 
 
     - name: restart mysql
       service:
@@ -21,10 +23,14 @@
         state: restarted
         
     - name: install core data
-      shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures="{{api_root}}{{fixture_path}}/Core" --append
+      shell: php bin/console doctrine:fixtures:load --fixtures="{{api_root}}{{fixture_path}}/Core" --append
+      args:
+        chdir: "{{api_root}"
     - debug: msg="Tavro Core Installation Complete on {{ inventory_hostname }}"
 
     - name: install development fixtures
-      shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}/Dev --append
+      shell: php bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}/Dev --append
+      args:
+        chdir: "{{api_root}"
 
     - debug: msg="Tavro Development API DB Installation Complete on {{ inventory_hostname }}"
