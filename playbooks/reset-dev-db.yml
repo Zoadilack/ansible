@@ -14,6 +14,12 @@
     - name: reset cache
       shell: php {{api_root}bin/console cache:clear    
 
+    - name: restart mysql
+      service:
+        name: mysql
+        pattern: mysql
+        state: restarted
+        
     - name: install core data
       shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures="{{api_root}}{{fixture_path}}/Core" --append
     - debug: msg="Tavro Core Installation Complete on {{ inventory_hostname }}"
