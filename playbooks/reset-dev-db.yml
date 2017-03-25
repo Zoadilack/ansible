@@ -10,6 +10,10 @@
     fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures"
 
   tasks:
+
+    - name: reset cache
+      shell: php {{api_root}bin/console cache:clear    
+
     - name: install core data
       shell: php {{api_root}}bin/console doctrine:fixtures:load --fixtures="{{api_root}}{{fixture_path}}/Core" --append
     - debug: msg="Tavro Core Installation Complete on {{ inventory_hostname }}"
