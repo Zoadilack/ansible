@@ -11,26 +11,28 @@
 
   tasks:
 
+    - name: restart mysql
+      service:
+        name: mysql
+        state: restarted
+      become: true
+      become_user: root
+
     - name: reset cache
       shell: php bin/console cache:clear
       args:
         chdir: "{{api_root}}" 
-
-    - name: restart mysql
-      service:
-        name: mysql
-        pattern: mysql
-        state: restarted
+      become: true
+      become_user: root
         
     - name: install core data
       shell: php bin/console doctrine:fixtures:load --fixtures="{{api_root}}{{fixture_path}}/Core" --append
       args:
-        chdir: "{{api_root}"
+        chdir: "{{api_root}}"
     - debug: msg="Tavro Core Installation Complete on {{ inventory_hostname }}"
 
     - name: install development fixtures
       shell: php bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}/Dev --append
       args:
-        chdir: "{{api_root}"
-
+        chdir: "{{api_root}}"
     - debug: msg="Tavro Development API DB Installation Complete on {{ inventory_hostname }}"
