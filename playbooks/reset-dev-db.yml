@@ -45,6 +45,6 @@
     - name: Notify Slack
       slack:
         token: "{{slack_webhook_token}}"
-        username: "Hutch's Mom"
+        username: "tavrobot"
         channel: "#tavro"
-        msg: '{{ inventory_hostname }} is alive!'
+        msg: 'Fresh install of {{hostname}} on {{ inventory_hostname }} is complete!'
