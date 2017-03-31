@@ -1,0 +1,16 @@
+---
+- hosts: all
+
+  any_errors_fatal: true
+
+  vars:
+    api_root: "/var/www/tavro/api/"
+
+  tasks:
+
+    - name: reset cache
+      shell: php bin/console cache:clear
+      args:
+        chdir: "{{api_root}}"
+      become: true
+      become_user: root

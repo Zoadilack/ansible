@@ -1,0 +1,10 @@
+---
+- name: reset tavro-api cache
+  command: php bin/console cache:clear
+  args:
+    chdir: "/var/www/tavro/api"
+
+- name: reset tavro-admin cache
+  command: php bin/console cache:clear
+  args:
+    chdir: "/var/www/tavro/admin"
