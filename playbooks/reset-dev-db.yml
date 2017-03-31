@@ -15,7 +15,7 @@
   tasks:
 
     - debug: msg="Resetting Tavro Data..."
-      notify: reset tavro-api cache
+      notify: "reset tavro-api cache"
       changed_when: true
 
     - name: restart mysql
@@ -36,7 +36,7 @@
       args:
         chdir: "{{api_root}}"
         notify:
-      notify: reset tavro-api cache
+      notify: "reset tavro-api cache"
       changed_when: true
 
     - debug: msg="Tavro Development API DB Installation Complete on {{ inventory_hostname }}"
