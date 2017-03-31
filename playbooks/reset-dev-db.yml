@@ -3,6 +3,10 @@
 
 - hosts: vagrant
 
+  vars_files:
+    - ../config/vagrant.yml
+    - ../config/parameters.yml
+
   any_errors_fatal: true
 
   vars:
@@ -35,8 +39,12 @@
       shell: php bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}/Dev --append
       args:
         chdir: "{{api_root}}"
-        notify:
       notify: "reset tavro-api cache"
       changed_when: true
 
-    - debug: msg="Tavro Development API DB Installation Complete on {{ inventory_hostname }}"
+    - name: Notify Slack
+      slack:
+        token: "{{slack_api_token}}"
+        username: "Hutch's Mom"
+        channel: "#tavro"
+        msg: '{{ inventory_hostname }} is alive!'
