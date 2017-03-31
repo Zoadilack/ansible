@@ -44,7 +44,7 @@
 
     - name: Notify Slack
       slack:
-        token: "{{slack_api_token}}"
+        token: "{{slack_webhook_token}}"
         username: "Hutch's Mom"
         channel: "#tavro"
         msg: '{{ inventory_hostname }} is alive!'
