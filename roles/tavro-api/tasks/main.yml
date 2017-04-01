@@ -96,14 +96,6 @@
   become: true
   become_user: "{{become_user}}"
 
-- name: composer update
-  command: "composer update {{composer_args}}"
-  args:
-    chdir: "{{symfony_root}}"
-  when: autoloader.stat.exists == True
-  become: true
-  become_user: "{{become_user}}"
-
 - name: install friendsofphp/sami
   get_url:
     url: http://get.sensiolabs.org/sami.phar
