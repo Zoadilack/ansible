@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  vars_files:
+    - config/jenkins.yml
+    - config/parameters.yml
+  roles:
+    - { role: tavro-api, tags: [ tavro_env ] }
+- include: playbooks/install-dev.yml
+- include: playbooks/phpunit.yml

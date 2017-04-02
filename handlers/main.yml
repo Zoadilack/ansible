@@ -1,10 +1,10 @@
 ---
 - name: reset tavro-api cache
-  command: php bin/console cache:clear
-  args:
-    chdir: "/var/www/tavro/api"
+  include: tavro-api-cache-reset.yml
 
 - name: reset tavro-admin cache
   command: php bin/console cache:clear
   args:
     chdir: "/var/www/tavro/admin"
+  become: true
+  become_user: "{{become_user}}"

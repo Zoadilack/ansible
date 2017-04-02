@@ -1,0 +1,17 @@
+---
+- name: tavro-api cache:clear
+  command: php bin/console cache:clear
+  args:
+    chdir: "/var/www/tavro/api"
+  become: false
+
+- name: make tavro-api cache writable
+  file:
+    path: "{{cache_dir}}"
+    state: directory
+    mode: 0777
+    recurse: yes
+    group: "{{become_user}}"
+    force: yes
+  become: true
+  become_user: root
