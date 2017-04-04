@@ -1,0 +1,108 @@
+---
+- include: reset-db.yml
+
+- hosts: all
+
+  any_errors_fatal: true
+
+  vars:
+    api_root: "/var/www/tavro/api"
+    tavro_core_root: "{{api_root}}/vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle"
+    artifact: "{{ ansible_date_time.date }}__{{version}}.tgz"
+    fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures"
+
+  tasks:
+
+#    - name: switch "tavro-api" to the specified version
+#      command: "git reset --HARD && git checkout {{version}} && git pull"
+#      args:
+#        chdir: "{{api_root}}"
+
+#    - name: Clone the correct branch (version) for tavro-api
+#      git:
+#        repo: "git@github.com:/zoadilack/tavro-api"
+#        #key_file: "~/.ssh/tavro_api_deployment_key"
+#        dest: "{{api_root}}"
+#        version: "{{version}}"
+
+    - stat:
+        path: "{{api_root}}vendor"
+      register: autoload
+
+    - name: Clear composer cache
+      shell: composer clear-cache
+      args:
+        chdir: "{{api_root}}"
+
+    - name: install the api dependencies
+      command: composer install --prefer-dist -o -vvv
+      become: false
+      args:
+        chdir: "{{api_root}}"
+      when: autoload.stat.exists == False
+
+    - name: update the api dependencies
+      command: composer update --prefer-dist -o -vvv
+      become: false
+      args:
+        chdir: "{{api_root}}"
+      when: autoload.stat.exists
+
+#    - name: switch "tavro-core" to the specified version
+#      command: "git reset --HARD && git checkout {{version}} && git pull"
+#      args:
+#        chdir: "{{tavro_core_root}}"
+
+    - name: delete all app cache
+      file:
+        path: "{{api_root}}/app/cache"
+        state: absent
+        force: yes
+
+    - name: rebuild app cache
+      command: "php bin/console cache:clear --env={{tavro_env}}"
+      args:
+        chdir: "{{api_root}}"
+
+    - name: restart mysql
+      service:
+        name: mysql
+        state: restarted
+      become: true
+      become_user: root
+
+    - name: install core data
+      shell: "php bin/console doctrine:fixtures:load --fixtures='{{api_root}}/{{fixture_path}}/Core' --append"
+      args:
+        chdir: "{{api_root}}"
+
+    - name: install development fixtures
+      shell: "php bin/console doctrine:fixtures:load --fixtures='{{api_root}}/{{fixture_path}}/Dev' --append"
+      args:
+        chdir: "{{api_root}}"
+
+    - name: run phpunit
+      command: "vendor/bin/phpunit --testsuite=unit"
+      args:
+        chdir: "{{api_root}}"
+
+    - name: compile the artifacts to deploy to S3
+      command: "tar -czf ~/{{artifact}} {{api_root}}/app {{api_root}}/bin {{api_root}}/src {{api_root}}/var {{api_root}}/vendor {{api_root}}/web"
+
+    - name: upload build to S3
+      s3:
+        bucket: "tavro-jenkins"
+        object: "{{artifact}}"
+        src: "~/{{artifact}}"
+        mode: put
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+
+    ## @TODO: deploy to "staging" environment
+
+    - name: Notify Slack
+      slack:
+        token: "{{slack_webhook_token}}"
+        username: "tavrobot"
+        channel: "#tavro"
+        msg: '{{version}} build complete!'
