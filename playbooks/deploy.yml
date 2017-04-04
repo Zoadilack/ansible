@@ -87,13 +87,13 @@
         chdir: "{{api_root}}"
 
     - name: compile the artifacts to deploy to S3
-      command: "tar -czf ~/{{artifact}} {{api_root}}/app {{api_root}}/bin {{api_root}}/src {{api_root}}/var {{api_root}}/vendor {{api_root}}/web"
+      command: "tar -czf {{artifact}} {{api_root}}/app {{api_root}}/bin {{api_root}}/src {{api_root}}/var {{api_root}}/vendor {{api_root}}/web"
 
     - name: upload build to S3
       s3:
         bucket: "tavro-jenkins"
-        object: "{{artifact}}"
-        src: "~/{{artifact}}"
+        object: "api/{{artifact}}"
+        src: "{{artifact}}"
         mode: put
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
@@ -107,4 +107,4 @@
         token: "{{slack_webhook_token}}"
         username: "tavrobot"
         channel: "#tavro"
-        msg: '{{version}} build complete!'
+        msg: '{{ ansible_date_time.date }} {{ ansible_date_time.time }} {{ ansible_date_time.tz }} - tavro-api:{{version}} build `{{artifact}}` complete!'
