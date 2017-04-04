@@ -8,7 +8,7 @@
   vars:
     api_root: "/var/www/tavro/api"
     tavro_core_root: "{{api_root}}/vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle"
-    artifact: "{{ ansible_date_time.date }}__{{version}}.tgz"
+    artifact: "{{ ansible_date_time.date }}__{{ ansible_date_time.epoch }}__{{version}}.tgz"
     fixture_path: "vendor/zoadilack/tavro-core/Tavro/Bundle/CoreBundle/DataFixtures"
 
   tasks:
@@ -97,6 +97,8 @@
         mode: put
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
+      become: true
+      become_user: root
 
     ## @TODO: deploy to "staging" environment
 
