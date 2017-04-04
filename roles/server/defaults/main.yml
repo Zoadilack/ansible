@@ -4,6 +4,7 @@ server:
     packages:
       - curl
       - unzip
+      - ntp
       - wget
       - snmp
       - build-essential
@@ -11,6 +12,7 @@ server:
       - python-pip
       - python2.7
       - python-mysqldb
+      - python-boto
       - libssl-dev
       - libcurl4-openssl-dev
       - pkg-config
