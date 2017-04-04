@@ -4,6 +4,7 @@ server:
     packages:
       - curl
       - unzip
+      - ntp
       - wget
       - snmp
       - build-essential
