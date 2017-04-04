@@ -6,6 +6,7 @@
     - config/jenkins.yml
     - config/parameters.yml
   roles:
+    - aws
     - { role: tavro-api, tags: [ tavro_env ] }
 - include: playbooks/install-dev.yml
 - include: playbooks/phpunit.yml
