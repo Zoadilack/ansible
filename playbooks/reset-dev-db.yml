@@ -35,10 +35,3 @@
       shell: php bin/console doctrine:fixtures:load --fixtures={{api_root}}{{fixture_path}}/Dev --append
       args:
         chdir: "{{api_root}}"
-
-    - name: Notify Slack
-      slack:
-        token: "{{slack_webhook_token}}"
-        username: "tavrobot"
-        channel: "#tavro"
-        msg: 'Fresh install of {{hostname}} on {{ inventory_hostname }} is complete!'
