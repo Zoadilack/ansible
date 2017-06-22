@@ -8,12 +8,20 @@
 - name: Update apt
   apt: update_cache=yes cache_valid_time=3600
 
-- name: install nginx + packages
+- name: install nginx
   apt:
     pkg: "{{item}}"
     state: present
   with_items:
     - nginx
+
+# This shouldn't need to be separated from above
+# but...it is so it will work..
+- name: install nginx packages
+  apt:
+    pkg: "{{item}}"
+    state: present
+  with_items:
     - nginx-extras
 
 - name: set permissions on nginx logs dir
