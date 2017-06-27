@@ -1,16 +1,5 @@
 ---
 - set_fact: symfony_root="{{web_root}}/api"
-- set_fact: doc_root="{{web_root}}/api-docs"
-- set_fact: DOCS_HOSTNAME="api-docs.{{hostname}}"
-- set_fact: BLUEPRINT_HOSTNAME="apib.{{hostname}}"
-
-- set_fact:
-    composer_args="--prefer-dist --no-plugins"
-  when: tavro_env != 'production'
-
-- set_fact:
-    composer_args="--optimize-autoloader --prefer-dist --no-dev --no-plugins"
-  when: tavro_env == 'production'
 
 - set_fact:
     tavro_api_nginx_config_file="api.conf.j2"
@@ -38,32 +27,6 @@
     dest: "/etc/nginx/sites-enabled/api.conf"
     state: link
 
-- name: build api-docs configuration for nginx
-  template: src="docs.conf.j2" dest="/etc/nginx/sites-available/api-docs.conf" owner=www-data group=www-data mode=0644
-  tags:
-    - vagrant
-
-- name: build apib configuration for nginx
-  template: src="apib.conf.j2" dest="/etc/nginx/sites-available/apib.conf" owner=www-data group=www-data mode=0644
-  tags:
-    - vagrant
-
-- name: enable api-docs virtual host
-  file:
-    src: "/etc/nginx/sites-available/api-docs.conf"
-    dest: "/etc/nginx/sites-enabled/api-docs.conf"
-    state: link
-  tags:
-    - vagrant
-
-- name: enable apib virtual host
-  file:
-    src: "/etc/nginx/sites-available/apib.conf"
-    dest: "/etc/nginx/sites-enabled/apib.conf"
-    state: link
-  tags:
-    - vagrant
-
 # Do not restrict this to only if the file does NOT exists,
 # because we want to be able to override on demand with a new
 # set of config files in the provisioning root.
@@ -87,31 +50,6 @@
   command: "openssl rsa -passin pass:{{JWT_TOKEN_PASSPHRASE}} -pubout -in private.pem -out public.pem"
   args:
     chdir: "{{symfony_root}}/app/keys"
-
-- name: composer install
-  command: "composer update {{composer_args}}"
-  args:
-    chdir: "{{symfony_root}}"
-  when:
-    - autoloader.stat.exists == False
-    - composer_bin.stat.exists
-  become: true
-  become_user: "{{become_user}}"
-
-- name: install friendsofphp/sami
-  get_url:
-    url: http://get.sensiolabs.org/sami.phar
-    dest: "{{doc_root}}"
-    mode: 0644
-  tags:
-    - vagrant
-
-- name: build api docs
-  command: "php sami.phar update config.php -v"
-  args:
-    chdir: "{{doc_root}}"
-  tags:
-    - vagrant
 
 - name: restart nginx
   service: name=nginx state=restarted
