@@ -54,25 +54,16 @@
     src: parameters.yml.j2
     mode: 0644
 
-# @TODO: convert this to the composer module, when it stops acting stupid
-## disabled for now as it's part of the install playbook
+- name: composer install
+  command: "composer update {{composer_args}}"
+  args:
+    chdir: "{{symfony_root}}"
+  when:
+    - autoloader.stat.exists == False
+    - composer_bin.stat.exists
 
-#- name: composer install
-#  command: "composer update {{composer_args}}"
-#  args:
-#    chdir: "{{symfony_root}}"
-#  when: autoloader.stat.exists == False
-#  become: true
-#  become_user: "{{become_user}}"
-#
-#- name: composer update
-#  command: "composer update {{composer_args}}"
-#  args:
-#    chdir: "{{symfony_root}}"
-#  when: autoloader.stat.exists == True
-#  become: true
-#  become_user: "{{become_user}}"
-
+  become: true
+  become_user: "{{become_user}}"
 - name: install friendsofphp/sami
   get_url:
     url: http://get.sensiolabs.org/sami.phar

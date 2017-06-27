@@ -1,4 +1,8 @@
 ---
+- name: Check if Composer is installed.
+  stat: "path={{ composer_path }}"
+  register: composer_bin
+
 - name: fix proxy for Ubuntu
   shell: echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
 
@@ -57,6 +61,12 @@
     dest: "{{ home_dir }}/.ssh/config"
     state: touch
     mode: 0600
+
+- name: setup global composer token (if composer is present)
+  command: composer config --global github-oauth.github.com {{composer_github_oauth_token}}
+  when:
+    - composer_github_oauth_token != ''
+    - composer_bin.stat.exists
 
 - name: ensure github.com is a known host
   lineinfile:

@@ -92,7 +92,9 @@
   command: "composer update {{composer_args}}"
   args:
     chdir: "{{symfony_root}}"
-  when: autoloader.stat.exists == False
+  when:
+    - autoloader.stat.exists == False
+    - composer_bin.stat.exists
   become: true
   become_user: "{{become_user}}"
 
