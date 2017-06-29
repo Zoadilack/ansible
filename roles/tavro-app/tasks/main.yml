@@ -41,29 +41,6 @@
     dest: "/usr/bin/node"
     state: link
 
-- name: install node-sass
-  npm:
-    name: node-sass
-    global: yes
-    state: present
-  become: true
-  become_user: root
-
-- name: install yarn
-  npm:
-    name: yarn
-    global: yes
-    state: present
-  become: true
-  become_user: root
-
-- name: install dependencies with yarn
-  command: yarn install
-  args:
-    chdir: "{{tavro_app_dir}}"
-  become: true
-  become_user: root
-
 - name: restart nginx
   service: name=nginx state=restarted
   become: true
