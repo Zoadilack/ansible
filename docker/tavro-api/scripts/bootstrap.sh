@@ -21,7 +21,7 @@ fi
 if [ ! -z "$WEBROOT" ]; then
  sed -i "s#root /var/www/html;#root ${WEBROOT};#g" /etc/nginx/sites-available/default.conf
 else
- webroot=/var/www/html
+ webroot=/var/www/tavro
 fi
 
 # Enable custom nginx config files if they exist
@@ -132,7 +132,7 @@ if [ ! -z "$PUID" ]; then
   adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx -u ${PUID} nginx
 else
   # Always chown webroot for better mounting
-  chown -Rf nginx.nginx /var/www/html
+  chown -Rf nginx.nginx /var/www/tavro
 fi
 
 # Start supervisord and services
