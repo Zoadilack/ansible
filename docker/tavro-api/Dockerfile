@@ -251,6 +251,10 @@ ADD scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
 ADD scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
 RUN chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /bootstrap.sh
 
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \ 
+    apk --no-cache add shadow && \ 
+    usermod -u 1000 www-data
+
 EXPOSE 443 80
 
 CMD ["/bootstrap.sh"]
