@@ -249,11 +249,13 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
 ADD scripts/bootstrap.sh /bootstrap.sh
 ADD scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
 ADD scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
-RUN chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /bootstrap.sh
-
-RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \ 
-    apk --no-cache add shadow && \ 
-    usermod -u 1000 www-data
+RUN chmod 755 /usr/bin/letsencrypt-setup && \ 
+    chmod 755 /usr/bin/letsencrypt-renew && \ 
+    chmod 755 /bootstrap.sh && \
+    echo "1000:x:1000:1000::/home/1000:/bin/bash" >> /etc/passwd && \
+    echo "1000:x:1000:" >> /etc/group && \
+    echo "User 1001" >> /etc/nginx/nginx.conf && \
+    echo "Group 1001" >> /etc/nginx/nginx.conf
 
 EXPOSE 443 80
 

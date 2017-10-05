@@ -123,18 +123,5 @@ else
     fi
 fi
 
-if [ ! -z "$PUID" ]; then
-  if [ -z "$PGID" ]; then
-    PGID=${PUID}
-  fi
-  deluser nginx
-  addgroup -g ${PGID} nginx
-  adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx -u ${PUID} nginx
-else
-  # Always chown webroot for better mounting
-  chown -Rf nginx.nginx /var/www/tavro
-fi
-
 # Start supervisord and services
 exec /usr/bin/supervisord -n -c /etc/supervisord.conf
-
