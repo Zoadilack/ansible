@@ -1,16 +1,16 @@
-FROM nginx
+FROM alpine:3.6
 
 LABEL maintainer="Jake Litwicki <jake.litwicki@gmail.com>"
 
+RUN apk add --update nginx
+RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
+
 ADD nginx.conf /etc/nginx/
+ADD symfony.conf /etc/nginx/conf.d/
 
-# Override the default nginx config
-ADD symfony.conf /etc/nginx/conf.d/default.conf
+RUN echo "upstream php-upstream { server php:9001; }" > /etc/nginx/conf.d/upstream.conf
 
-RUN sed -i 's/{WEBROOT}/$WEBROOT/g' /etc/nginx/conf.d/default.conf && \
-    sed -i 's/{HOSTNAME}/$HOSTNAME/g' /etc/nginx/conf.d/default.conf && \
-    sed -i 's/{ENV}/$ENV/g' /etc/nginx/conf.d/default.conf && \
-    usermod -u 1000 www-data
+RUN adduser -D -g '' -G www-data www-data
 
 CMD ["nginx"]
 
