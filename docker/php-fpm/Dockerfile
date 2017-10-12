@@ -1,9 +1,20 @@
 FROM alpine:3.6
 
-LABEL maintainer="Vincent Composieux <vincent.composieux@gmail.com>"
+LABEL maintainer="Jake Litwicki <jake.litwicki@gmail.com>"
 
 RUN apk add --update \
     php7-fpm \
+    php7-common \
+    php7-pear \
+    php7-dev \
+    php7-xmlrpc \
+    php7-session \
+    php7-gettext \
+    php7-json \
+    php7-xdebug \
+    php7-bcmath \
+    php7-simplexml \
+    php7-dom \
     php7-apcu \
     php7-ctype \
     php7-curl \
@@ -39,4 +50,5 @@ ADD symfony.pool.conf /etc/php7/php-fpm.d/
 CMD ["php-fpm7", "-F"]
 
 WORKDIR /var/www/tavro
+
 EXPOSE 9000
