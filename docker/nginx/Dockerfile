@@ -13,6 +13,11 @@ RUN echo "upstream php-upstream { server php:9001; }" > /etc/nginx/conf.d/upstre
 
 RUN adduser -D -g '' -G www-data www-data
 
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \
+    apk --no-cache add shadow && \
+    usermod -u 1000 www-data && \
+    chown -R www-data:www-data /var/www
+
 CMD ["nginx"]
 
 EXPOSE 80
