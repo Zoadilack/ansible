@@ -6,7 +6,7 @@ RUN apk add --update --no-cache bash gawk sed grep bc coreutils nginx && \
     mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.bak
 
 ADD nginx.conf /etc/nginx/
-ADD tavro.conf /etc/nginx/conf.d/tavro.conf
+ADD api.conf /etc/nginx/conf.d/api.conf
 
 RUN echo "upstream php-upstream { server php:9001; }" > /etc/nginx/conf.d/upstream.conf
 
