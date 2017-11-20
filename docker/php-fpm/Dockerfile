@@ -36,7 +36,8 @@ RUN apk add --update \
     php7-phar \
     php7-tokenizer \
     make \
-    curl
+    curl \
+    openssl
 
 RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
 

@@ -1,7 +1,7 @@
 FROM alpine:3.6
 LABEL maintainer="Jake Litwicki <jake.litwicki@gmail.com>"
 
-RUN apk add --update --no-cache bash gawk sed grep bc coreutils nginx && \
+RUN apk add --update --no-cache bash gawk sed grep bc coreutils nginx openssl && \
     rm -rf /var/cache/apk/* && rm -rf /tmp/* && \
     mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.bak
 
